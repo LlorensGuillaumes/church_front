@@ -1,0 +1,1 @@
+cuando abramos la carpeta, hay que poner nmp i para que instale el node_modules
