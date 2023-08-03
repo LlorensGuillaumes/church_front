@@ -10,8 +10,10 @@ function App() {
   const [selectedChurch, setSelectedChurch] = useState("");
   const [apiData, setApiData] = useState([]);
   const [dataFiltered, setDataFiltered] = useState([]);
-  const [filter, setFilter] = useState("");
+  const [filter, setFilter] = useState("detail");
   const [filterItems, setFilterItems] = useState({});
+  const [principalView, setPrincipalView] = useState("mapView");
+  const [preViewNewChurch, setPreviewNewChurch] = useState([])
 
   useEffect(() => {
     fetch("http://localhost:5000/churches")
@@ -33,16 +35,25 @@ function App() {
 
   return (
     <div className="initStyles">
-      <NavBar setFilter={setFilter} />
+      <NavBar setFilter={setFilter} setPrincipalView={setPrincipalView} />
       <div className="mapAndDetail">
         <div className="mapView">
-          {/* <MapView
-            className="mapView"
-            setSelectedChurch={setSelectedChurch}
-            dataFiltered={dataFiltered}
-            setFilter={setFilter}
-          /> */}
-          <NewChurch />
+          {principalView === 'map' ?  
+              <MapView
+                className="mapView"
+                setSelectedChurch={setSelectedChurch}
+                dataFiltered={dataFiltered}
+                setFilter={setFilter}
+              /> 
+          : principalView === "newChurch" ?
+              <NewChurch setPreviewNewChurch = {setPreviewNewChurch}/>
+          : 
+            <MapView
+              className="mapView"
+              setSelectedChurch={setSelectedChurch}
+              dataFiltered={dataFiltered}
+              setFilter={setFilter}
+            />}
         </div>
         {filter === "filter" ? (
           <Filter
@@ -55,8 +66,10 @@ function App() {
           />
         ) : filter === "detail" ? (
           <ChurchDetail
+            
             className="ChurcDetail"
             selectedChurch={selectedChurch}
+            preViewNewChurch = {preViewNewChurch}
             setFilter={setFilter}
           />
         ) : (

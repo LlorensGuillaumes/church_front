@@ -1,8 +1,10 @@
-//import { arch } from "os";
 import React, { useEffect, useState } from "react";
+import "./NewChurch.css";
+import Carrousel from "../../components/Carrousel/Carrousel";
 
-const NewChurch = () => {
+const NewChurch = ({ setPreviewNewChurch }) => {
   const [name, setName] = useState(""); // Variable para almacenar el valor del formulario
+  const [placeHolderName, setPlaceHolderName] = useState("introduir nom");
   const [listNames, setListNames] = useState([]);
   const [description, setDescription] = useState("");
   const [townLocation, setTownLocation] = useState("");
@@ -20,6 +22,7 @@ const NewChurch = () => {
   const [images, setImages] = useState([]);
   const [web, setWeb] = useState("");
   const [property, setProperty] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const [details, setDetails] = useState([]);
 
@@ -29,23 +32,122 @@ const NewChurch = () => {
   const [detailImages, setDetailImages] = useState([]);
 
   const [dataSelect, setDataSelect] = useState({});
+  const [imagesURL, setImagesURL] = useState([]);
+
+  const [churchToSave, SetChurchToSave] = useState("");
+
+  useEffect(() => {
+    if (listNames.length > 0) {
+      setPlaceHolderName("altres noms");
+    } else {
+      setPlaceHolderName("introduir nom");
+    }
+  }, [listNames]);
 
   useEffect(() => {
     fetch("http://localhost:5000/appList")
       .then((res) => res.json())
       .then((result) => {
         setDataSelect(result);
-      },[])
+      }, [])
       .catch((error) => {
         console.log(error);
       });
   }, []);
 
-  console.log(dataSelect);
+  useEffect(() => {
+    setPreviewNewChurch([
+      {
+        name: listNames,
+        description: description,
+        townLocation: townLocation,
+        churchProvince: province,
+        architectonicStyle: listArchitectonicStyle,
+        century: listCentury,
+        images: imagesURL.map((item) => item.objectURL),
+        churchWeb: web,
+        churchProperty: property,
+      },
+    ]);
+  }, [
+    listNames,
+    description,
+    townLocation,
+    province,
+    listArchitectonicStyle,
+    listCentury,
+    imagesURL,
+    web,
+    property,
+    setPreviewNewChurch,
+  ]);
+
+  const fnAddImagesDb = (saveNames, id) => {
+    const data = {
+      images: saveNames.saveNames,
+    };
+
+    console.log(data)
+
+    fetch("http://localhost:5000/churches/modifyChurch/" + id, {
+      method: "PUT",
+      body: JSON.stringify(data),
+      headers: {
+        "content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    const objectURL = URL.createObjectURL(file);
+
+    const newImage = {
+      file: file,
+      objectURL: objectURL,
+    };
+
+    const urlAlreadyExist = imagesURL.some(
+      (image) => image.objectURL === objectURL
+    );
+    if (!urlAlreadyExist) {
+      setImagesURL([...imagesURL, newImage]);
+    }
+  };
+
+  const handleImageUpload = (_id) => {
+    const fileList = imagesURL.map((item) => item.file);
+
+    const formData = new FormData();
+
+    fileList.forEach((file, index) => {
+      formData.append(`file${index}`, file);
+    });
+
+    formData.append("churchId", _id);
+
+    fetch("http://localhost:5000/churches/images", {
+      method: "POST",
+      body: formData,
+      headers: {
+        content_Type: "multipart/from-data",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        fnAddImagesDb(data, _id);
+      })
+      .catch((error) => console.log("Error al subir la imagen: ", error));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Evitar que la página se recargue al enviar el formulario
-    const newChurch = {
+    const data = {
       name: listNames,
       description: description,
       townLocation: townLocation,
@@ -57,13 +159,27 @@ const NewChurch = () => {
       web: web,
     };
 
-    console.log(newChurch); // Acceso a la variable cuando hacemos submit
+    console.log(data);
+
+    fetch("http://localhost:5000/churches/newChurch/", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        handleImageUpload(response._id);
+      })
+      .catch((error) => console.log(error));
   };
 
   const addName = () => {
     if (!listNames.includes(name)) {
       setListNames([...listNames, name]);
     }
+    setName("");
   };
 
   const addArchitectonicStyle = () => {
@@ -85,79 +201,62 @@ const NewChurch = () => {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
+    <div className="page">
+      <form onSubmit={handleSubmit} className="form">
         <div>
-          <div>
-            <label htmlFor="name">Nom:</label>
+          <div className="inputName">
             <input
+              placeholder={placeHolderName}
               type="text"
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-            <button type="button" onClick={addName}>
+            <button type="button" id="btName" onClick={addName}>
               Guardar nom{" "}
             </button>
-            {listNames.map((item) => (
-              <p key={item}>{item}</p>
-            ))}
           </div>
-          <label htmlFor="description">Descripció:</label>
-          <input
-            type="text"
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-          <label htmlFor="townLocation">Població:</label>
-          <input
-            type="text"
-            id="townLocation"
-            value={townLocation}
-            onChange={(e) => setTownLocation(e.target.value)}
-          />
-          <label htmlFor="province">Provincia:</label>
-          <input
-            type="text"
-            id="province"
-            value={province}
-            onChange={(e) => setProvince(e.target.value)}
-          />
-          <div>
+          <div className="inputTown">
+            <input
+              type="text"
+              id="townLocation"
+              value={townLocation}
+              placeholder="Població"
+              onChange={(e) => setTownLocation(e.target.value)}
+            />
+            <input
+              type="text"
+              id="province"
+              value={province}
+              placeholder="Provincia"
+              onChange={(e) => setProvince(e.target.value)}
+            />
+          </div>
+          <div className="inputLocationGPS">
             <label htmlFor="locationGPS">Coordenades GPS:</label>
             <input
               type="text"
               id="latGPS"
               value={latGPS}
-              placeholder="LATITUT"
+              placeholder="41.23"
               onChange={(e) => setLatGPS(e.target.value)}
             />
             <input
               type="text"
               id="lonGPS"
               value={lonGPS}
-              placeholder="LONGITUT"
+              placeholder="1.18"
               onChange={(e) => setLonGPS(e.target.value)}
             />
           </div>
 
-          <label htmlFor="townLocation">Població:</label>
-          <input
-            type="text"
-            id="townLocation"
-            value={townLocation}
-            onChange={(e) => setTownLocation(e.target.value)}
-          />
-
-          <div>
-            <label htmlFor="architectonicStyle">Estil arquitectònic:</label>
+          <div className="inputArchitectonicStyle">
             <select
               id="architectonicStyle"
               value={architectonicStyle}
               onChange={(e) => setArchitectonicStyle(e.target.value)}
             >
-              <option>Selecciona</option>
+              <option>Estil arquitectònic </option>
               {dataSelect[0] && dataSelect[0].architectonicStyles ? (
                 dataSelect[0].architectonicStyles.map((item, index) => (
                   <option key={index}>{item}</option>
@@ -168,23 +267,17 @@ const NewChurch = () => {
             </select>
 
             <button type="button" onClick={addArchitectonicStyle}>
-              Afegir estil arquitectònic
+              Add
             </button>
-            {listArchitectonicStyle.map((item) => (
-              <p key={item}>{item}</p>
-            ))}
-          </div>
 
-          <div>
-            <label htmlFor="century">Segle:</label>
             <select
               id="century"
               value={century}
               onChange={(e) => setCentury(e.target.value)}
             >
-              <option>Selecciona</option>
+              <option>Segle</option>
               {dataSelect[0] && dataSelect[0].centuries ? (
-                dataSelect[0].centuries.map((item,index) => (
+                dataSelect[0].centuries.map((item, index) => (
                   <option key={index}>{item}</option>
                 ))
               ) : (
@@ -192,31 +285,48 @@ const NewChurch = () => {
               )}
             </select>
             <button type="button" onClick={addCentury}>
-              Afegir segle
+              Add
             </button>
-            {listCentury.map((item) => (
-              <p key={item}>{item}</p>
-            ))}
           </div>
 
-          <label htmlFor="web">Web:</label>
+          <div className="inputDescription">
+            <textarea
+              id="description"
+              value={description}
+              placeholder="Descripció"
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+          <div className="inputWeb">
+            <input
+              type="text"
+              id="web"
+              value={web}
+              placeholder="Enllaç web"
+              onChange={(e) => setWeb(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="inputProperty">
           <input
             type="text"
-            id="web"
-            value={web}
-            onChange={(e) => setWeb(e.target.value)}
+            id="property"
+            value={property}
+            placeholder="Propietari"
+            onChange={(e) => setProperty(e.target.value)}
           />
         </div>
+        <div>
+          <input type="file" onChange={handleImageChange} />
+          {/* <button type="button" onClick={handleImageUpload}>
+            {" "}
+            Pujar imatge{" "}
+          </button> */}
+        </div>
 
-        <label htmlFor="property">Població:</label>
-        <input
-          type="text"
-          id="property"
-          value={property}
-          onChange={(e) => setProperty(e.target.value)}
-        />
-
-        <button type="submit">Enviar</button>
+        <div>
+          <button type="submit">Enviar</button>
+        </div>
       </form>
     </div>
   );

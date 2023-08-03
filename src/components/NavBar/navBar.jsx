@@ -1,9 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 
-const NavBar = ({ setFilter }) => {
+const NavBar = ({ setFilter, setPrincipalView }) => {
+
+const [buttonText, setButtonText] = useState ("INTRODUIR NOVA ESGLÈSIA");
 
   const fnOpcionesFiltro = () => {
     setFilter('filter');
+  }
+
+  const fnViewNewChurch = () => {
+    if (buttonText === "INTRODUIR NOVA ESGLÈSIA") {
+      setPrincipalView('newChurch');
+      setButtonText('SORTIR SENSE GUARDAR');
+    } else if(buttonText === "SORTIR SENSE GUARDAR"){
+      setPrincipalView('map');
+      setButtonText('INTRODUIR NOVA ESGLÈSIA')
+    };
+
+    
   }
 
   return (
@@ -18,6 +32,7 @@ const NavBar = ({ setFilter }) => {
      
       <h1> Yo soy el Navbar </h1>
       <button onClick={fnOpcionesFiltro}>FILTRAR</button>
+      <button onClick={fnViewNewChurch}>{buttonText}</button>
     </div>
   );
 };
