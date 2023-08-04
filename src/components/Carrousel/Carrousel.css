@@ -192,6 +192,7 @@
 }
 
 .active-render-item {
+    background-color: transparent;
     display: flex;
     position: absolute;
     display: flex;

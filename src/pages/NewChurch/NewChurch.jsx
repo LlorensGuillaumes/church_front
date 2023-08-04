@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./NewChurch.css";
-import Carrousel from "../../components/Carrousel/Carrousel";
+//import Carrousel from "../../components/Carrousel/Carrousel";
 
 const NewChurch = ({ setPreviewNewChurch }) => {
   const [name, setName] = useState(""); // Variable para almacenar el valor del formulario
-  const [placeHolderName, setPlaceHolderName] = useState("introduir nom");
+  const [placeHolderName, setPlaceHolderName] = useState("  Introduir nom");
   const [listNames, setListNames] = useState([]);
   const [description, setDescription] = useState("");
   const [townLocation, setTownLocation] = useState("");
@@ -19,28 +19,29 @@ const NewChurch = ({ setPreviewNewChurch }) => {
   const [century, setCentury] = useState("");
   const [listCentury, setListCentury] = useState([]);
 
-  const [images, setImages] = useState([]);
+  //const [images, setImages] = useState([]);
   const [web, setWeb] = useState("");
   const [property, setProperty] = useState("");
-  const [selectedImage, setSelectedImage] = useState(null);
+  //const [selectedImage, setSelectedImage] = useState(null);
 
-  const [details, setDetails] = useState([]);
+  //const [details, setDetails] = useState([]);
 
-  const [detailType, setdetailType] = useState("");
-  const [detailDescription, setDetailDescription] = useState("");
-  const [year, setYear] = useState("");
-  const [detailImages, setDetailImages] = useState([]);
+  //const [detailType, setdetailType] = useState("");
+  //const [detailDescription, setDetailDescription] = useState("");
+  //const [year, setYear] = useState("");
+  //const [detailImages, setDetailImages] = useState([]);
 
   const [dataSelect, setDataSelect] = useState({});
   const [imagesURL, setImagesURL] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const [churchToSave, SetChurchToSave] = useState("");
+  //const [churchToSave, SetChurchToSave] = useState("");
 
   useEffect(() => {
     if (listNames.length > 0) {
-      setPlaceHolderName("altres noms");
+      setPlaceHolderName("  Altres noms");
     } else {
-      setPlaceHolderName("introduir nom");
+      setPlaceHolderName("  Introduir nom");
     }
   }, [listNames]);
 
@@ -87,7 +88,7 @@ const NewChurch = ({ setPreviewNewChurch }) => {
       images: saveNames.saveNames,
     };
 
-    console.log(data)
+    console.log(data);
 
     fetch("http://localhost:5000/churches/modifyChurch/" + id, {
       method: "PUT",
@@ -155,24 +156,36 @@ const NewChurch = ({ setPreviewNewChurch }) => {
       locationGPS: [latGPS, lonGPS],
       architectonicStyle: listArchitectonicStyle,
       century: listCentury,
-      images: images,
       web: web,
     };
 
-    console.log(data);
-
-    fetch("http://localhost:5000/churches/newChurch/", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((response) => {
-        handleImageUpload(response._id);
+    if (
+      data.name.length > 0 &&
+      data.description !== "" &&
+      data.townLocation !== "" &&
+      data.province !== "" &&
+      data.locationGPS[0] !== "" &&
+      data.locationGPS[1] !== "" &&
+      (data.architectonicStyle.length > 0 || data.century.length > 0)
+    ) {
+      setErrorMessage("");
+      fetch("http://localhost:5000/churches/newChurch/", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "content-Type": "application/json",
+        },
       })
-      .catch((error) => console.log(error));
+        .then((res) => res.json())
+        .then((response) => {
+          handleImageUpload(response._id);
+        })
+        .catch((error) => console.log(error));
+    } else {
+      setErrorMessage(
+        "Els camps Població, Provincia i Coordendades GPS són obligatoris, a demés, ha de constar també un Nom i un Estil arquitectònic o Segle. Pots comprovar les dades introduides en la part dreta de la pantalla"
+      );
+    }
   };
 
   const addName = () => {
@@ -221,14 +234,14 @@ const NewChurch = ({ setPreviewNewChurch }) => {
               type="text"
               id="townLocation"
               value={townLocation}
-              placeholder="Població"
+              placeholder="  Població"
               onChange={(e) => setTownLocation(e.target.value)}
             />
             <input
               type="text"
               id="province"
               value={province}
-              placeholder="Provincia"
+              placeholder="  Provincia"
               onChange={(e) => setProvince(e.target.value)}
             />
           </div>
@@ -238,14 +251,14 @@ const NewChurch = ({ setPreviewNewChurch }) => {
               type="text"
               id="latGPS"
               value={latGPS}
-              placeholder="41.23"
+              placeholder="  41.23"
               onChange={(e) => setLatGPS(e.target.value)}
             />
             <input
               type="text"
               id="lonGPS"
               value={lonGPS}
-              placeholder="1.18"
+              placeholder="  1.18"
               onChange={(e) => setLonGPS(e.target.value)}
             />
           </div>
@@ -293,7 +306,7 @@ const NewChurch = ({ setPreviewNewChurch }) => {
             <textarea
               id="description"
               value={description}
-              placeholder="Descripció"
+              placeholder="  Descripció"
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
@@ -302,7 +315,7 @@ const NewChurch = ({ setPreviewNewChurch }) => {
               type="text"
               id="web"
               value={web}
-              placeholder="Enllaç web"
+              placeholder="  Enllaç web"
               onChange={(e) => setWeb(e.target.value)}
             />
           </div>
@@ -312,21 +325,26 @@ const NewChurch = ({ setPreviewNewChurch }) => {
             type="text"
             id="property"
             value={property}
-            placeholder="Propietari"
+            placeholder="  Propietari"
             onChange={(e) => setProperty(e.target.value)}
           />
         </div>
-        <div>
+        <div className="inputFile">
           <input type="file" onChange={handleImageChange} />
-          {/* <button type="button" onClick={handleImageUpload}>
-            {" "}
-            Pujar imatge{" "}
-          </button> */}
         </div>
 
-        <div>
-          <button type="submit">Enviar</button>
+        <div className="btnSend">
+          <button type="submit" id="btnEnviar">
+            Enviar
+          </button>
         </div>
+       
+          {errorMessage !== "" ? (
+            <div className="errorMessegeContainer">
+            <p className="errorMessage">{errorMessage}</p>
+            </div>
+          ) : null}
+        
       </form>
     </div>
   );

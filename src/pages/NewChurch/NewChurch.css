@@ -1,3 +1,5 @@
+
+
 #preImageContainer{
     width: 150px;
     height: 200px;
@@ -136,4 +138,37 @@ margin-top: 10px;
 display: flex;
 flex-direction: column;
 margin-top: 10px;
+}
+.inputFile{
+    display: flex;
+    margin-top: 15px;
+}
+
+.btnSend{
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+
+}
+#btnEnviar{
+        width: 150px;
+        height: 40px;
+    }
+
+.errorMessegeContainer{
+    margin-top: 20px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-style: solid;
+    border-color: coral;
+
+    }
+.errorMessage{
+    color: coral;
+    font-size: 25px;
+    font-weight: bold;
+    text-align: center;
+
 }

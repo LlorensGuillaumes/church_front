@@ -1,38 +1,48 @@
 import React, { useState } from "react";
-
-const NavBar = ({ setFilter, setPrincipalView }) => {
-
-const [buttonText, setButtonText] = useState ("INTRODUIR NOVA ESGLÈSIA");
+import "./navBar.css";
+const NavBar = ({
+  setFilter,
+  setPrincipalView,
+  setSelectedChurch,
+  setDataType,
+}) => {
+  const [buttonText, setButtonText] = useState("INTRODUIR NOVA ESGLÈSIA");
 
   const fnOpcionesFiltro = () => {
-    setFilter('filter');
-  }
+    setFilter("filter");
+  };
 
   const fnViewNewChurch = () => {
     if (buttonText === "INTRODUIR NOVA ESGLÈSIA") {
-      setPrincipalView('newChurch');
-      setButtonText('SORTIR SENSE GUARDAR');
-    } else if(buttonText === "SORTIR SENSE GUARDAR"){
-      setPrincipalView('map');
-      setButtonText('INTRODUIR NOVA ESGLÈSIA')
-    };
-
-    
-  }
+      setPrincipalView("newChurch");
+      setButtonText("SORTIR SENSE GUARDAR");
+      setSelectedChurch("");
+    } else if (buttonText === "SORTIR SENSE GUARDAR") {
+      setPrincipalView("map");
+      setButtonText("INTRODUIR NOVA ESGLÈSIA");
+      setDataType("exist");
+      setSelectedChurch("");
+    }
+  };
 
   return (
-    <div>
-
-      {/* {apiData.map((item) => (
-        item.churchDetail.map((detail) => (
-          <p key = {detail._id}>{detail.detailType}</p>
-        ))
-        
-      ))} */}
-     
-      <h1> Yo soy el Navbar </h1>
-      <button onClick={fnOpcionesFiltro}>FILTRAR</button>
-      <button onClick={fnViewNewChurch}>{buttonText}</button>
+    <div className="navBar">
+      <div className="pageTitle">
+        <h1>TURISME ARQUITECTÒNIC</h1>
+      </div>
+      <div className="navBarButtons">
+        <div className="leftButtons">
+          <button onClick={fnOpcionesFiltro} className="btnNavbar">
+            FILTRAR
+          </button>
+          <button onClick={fnViewNewChurch} className="btnNavbar">
+            {buttonText}
+          </button>
+        </div>
+        <div className="rightButtons">
+          <button className="btnNavbar">LOGIN</button>
+        </div>
+      </div>
     </div>
   );
 };

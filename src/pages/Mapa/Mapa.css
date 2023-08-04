@@ -1,5 +1,13 @@
 .MapContainer {
     width: 100%;
     height: 100%;
+    padding-left: 25px;
+   
 
+}
+.leaflet-top{
+    background-color: transparent;
+}
+span{
+    background-color: transparent;
 }

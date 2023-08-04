@@ -10,9 +10,49 @@
 *{
   margin: 0px;
   padding: 0px;
+  background-color: dimgray;
+
+
   
 }
+button{
+  background-color: cornsilk;
+  text-align: center;
+  font-size: 25px;
+  font-weight: bolder;
+  padding: 7px;
 
+
+}
+
+input::placeholder{
+ color: white;
+}
+text::placeholder{
+  color: white;
+}
+textarea{
+  color: white;
+}
+input{
+  color: white;
+}
+h2{
+  color: white;
+}
+p{
+  color: white;
+}
+a{
+  color: aqua;
+}
+
+label{
+  color: white;
+}
+select{
+  color: white;
+}
 /* @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

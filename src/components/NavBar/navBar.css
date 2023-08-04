@@ -1,0 +1,25 @@
+.navBar{
+    display: flex;
+    flex-direction: column; 
+
+}
+.btnNavbar{
+    background-color: transparent;
+    color: aliceblue;
+    margin-left: 20px;
+    border-style: none;
+
+}
+.navBarButtons{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+
+.pageTitle{
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+    color: aliceblue;
+}
