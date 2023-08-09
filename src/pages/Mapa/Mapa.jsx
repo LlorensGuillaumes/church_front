@@ -4,6 +4,7 @@ import { icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./Mapa.css";
 
+
 import gotic from "../../components/Images/gotic.png";
 
 

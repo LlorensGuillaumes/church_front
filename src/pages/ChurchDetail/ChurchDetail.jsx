@@ -1,41 +1,33 @@
 import React, { useEffect, useState } from "react";
 import "./ChurchDetail.css";
 import Carrousel from "../../components/Carrousel/Carrousel";
+import api from '../../shared/API/Api'
 
-const ChurchDetail = ({ selectedChurch, preViewNewChurch, setDataType, dataType }) => {
+const ChurchDetail = ({ selectedChurch, preViewNewChurch, setDataType, dataType, setStandOutDetailsData }) => {
   const [apiData, setApiData] = useState([]);
   
 
   useEffect(() => {
     if (selectedChurch) {
       setDataType('exist')
-      fetch("http://localhost:5000/churches/id/" + selectedChurch)
-        .then((res) => res.json())
-        .then((result) => setApiData(result))
-        .catch((error) => console.log(error));
+
+      api
+        .get(`/churches/id/${selectedChurch}`)
+        .then((response) => {
+          setApiData(response)
+          setStandOutDetailsData(response.churchDetail)
+        })
+        .catch((error) =>{
+          console.log(error)
+        })
+
     } else if (preViewNewChurch.length > 0) {
       setDataType('new')
       setApiData(preViewNewChurch);
     }
-  }, [selectedChurch, preViewNewChurch]);
+  }, [selectedChurch, preViewNewChurch, setDataType]);
 
-  // useEffect(() => {
-  //   if (apiData.length > 0) {
-  //     const imagesFromApiData = {
-  //       images: apiData[0].images,
-  //     }
-  //     console.log (imagesFromApiData)
-  //     if (imagesFromApiData.images.length > 0) {
-  //       console.log('entra')
-  //       fetch(`http://localhost:5000/churches/getImages/${imagesFromApiData.images}`)
-  //         .then((res) => res.json())
-  //         .then((response) => {
-  //           setChurchImagesURL(response);
-  //         })
-  //         .catch((error) => console.log(error));
-  //     }
-  //   }
-  // }, [apiData]);
+
 
   if (apiData.length > 0) {
     const churchName = apiData[0].name;
@@ -75,7 +67,7 @@ console.log(churchImages)
           
 
           {churchProperty ? <p>Gestionada per: {churchProperty}</p> : null}
-          {churchGoogleMapsLink ? <a href={churchGoogleMapsLink}>googleMaps</a> : null}
+          {/* {churchGoogleMapsLink ? <a href={churchGoogleMapsLink}>googleMaps</a> : null} */}
           {churchweb ? <a href={churchweb} target="_blank" rel="noreferrer"> web: {churchName[0]}</a> : null}
 
           <p className="description">{churchDescription}</p>

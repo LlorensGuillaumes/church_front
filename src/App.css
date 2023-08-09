@@ -31,6 +31,9 @@ input::placeholder{
 text::placeholder{
   color: white;
 }
+textarea::placeholder{
+  color: white;
+}
 textarea{
   color: white;
 }

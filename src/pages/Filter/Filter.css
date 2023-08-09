@@ -1,0 +1,43 @@
+.filterContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-left: 40px;
+
+
+}
+.stylesItems{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.columnItems{
+    margin-left: 5px;
+    margin-right: 5px;
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    font-size: 16px;
+}
+.btnAplicateFilters{
+    display: flex;
+    justify-content: start;
+    margin-top: 25px;
+    padding-left: 20%;
+    
+}
+h3{
+    color: white;
+    border-bottom: 2px solid white;
+}
+.selectAll{
+    display: flex;
+    justify-content: center;
+    padding-right: 170px;
+    margin-bottom: 20px;
+
+}
+

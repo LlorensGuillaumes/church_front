@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./NewChurch.css";
+import api from "../../shared/API/Api";
+import StandOutDetail from "../StandOutDetails/StandOutDetails";
 //import Carrousel from "../../components/Carrousel/Carrousel";
 
-const NewChurch = ({ setPreviewNewChurch }) => {
+const NewChurch = ({ setPreviewNewChurch, setPrincipalView }) => {
   const [name, setName] = useState(""); // Variable para almacenar el valor del formulario
   const [placeHolderName, setPlaceHolderName] = useState("  Introduir nom");
   const [listNames, setListNames] = useState([]);
@@ -22,6 +24,7 @@ const NewChurch = ({ setPreviewNewChurch }) => {
   //const [images, setImages] = useState([]);
   const [web, setWeb] = useState("");
   const [property, setProperty] = useState("");
+  const [buildType, setBuildType] = useState("");
   //const [selectedImage, setSelectedImage] = useState(null);
 
   //const [details, setDetails] = useState([]);
@@ -34,6 +37,7 @@ const NewChurch = ({ setPreviewNewChurch }) => {
   const [dataSelect, setDataSelect] = useState({});
   const [imagesURL, setImagesURL] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [viewStandDetails, setViewStandDetails] = useState(false);
 
   //const [churchToSave, SetChurchToSave] = useState("");
 
@@ -46,11 +50,11 @@ const NewChurch = ({ setPreviewNewChurch }) => {
   }, [listNames]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/appList")
-      .then((res) => res.json())
-      .then((result) => {
-        setDataSelect(result);
-      }, [])
+    api
+      .get("/appList")
+      .then((response) => {
+        setDataSelect(response);
+      })
       .catch((error) => {
         console.log(error);
       });
@@ -68,6 +72,7 @@ const NewChurch = ({ setPreviewNewChurch }) => {
         images: imagesURL.map((item) => item.objectURL),
         churchWeb: web,
         churchProperty: property,
+        buildType: buildType,
       },
     ]);
   }, [
@@ -81,6 +86,7 @@ const NewChurch = ({ setPreviewNewChurch }) => {
     web,
     property,
     setPreviewNewChurch,
+    buildType,
   ]);
 
   const fnAddImagesDb = (saveNames, id) => {
@@ -90,16 +96,10 @@ const NewChurch = ({ setPreviewNewChurch }) => {
 
     console.log(data);
 
-    fetch("http://localhost:5000/churches/modifyChurch/" + id, {
-      method: "PUT",
-      body: JSON.stringify(data),
-      headers: {
-        "content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
+    api
+      .put(`churces/modifyChurch/${id}`, data)
       .then((response) => {
-        console.log(response);
+        setPrincipalView("mapView");
       })
       .catch((error) => console.log(error));
   };
@@ -132,18 +132,12 @@ const NewChurch = ({ setPreviewNewChurch }) => {
 
     formData.append("churchId", _id);
 
-    fetch("http://localhost:5000/churches/images", {
-      method: "POST",
-      body: formData,
-      headers: {
-        content_Type: "multipart/from-data",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        fnAddImagesDb(data, _id);
+    api
+      .postFormData("churches/images", formData)
+      .then((response) => {
+        fnAddImagesDb(response, _id);
       })
-      .catch((error) => console.log("Error al subir la imagen: ", error));
+      .catch((error) => console.log(error));
   };
 
   const handleSubmit = (e) => {
@@ -157,6 +151,7 @@ const NewChurch = ({ setPreviewNewChurch }) => {
       architectonicStyle: listArchitectonicStyle,
       century: listCentury,
       web: web,
+      buildType: buildType,
     };
 
     if (
@@ -169,18 +164,14 @@ const NewChurch = ({ setPreviewNewChurch }) => {
       (data.architectonicStyle.length > 0 || data.century.length > 0)
     ) {
       setErrorMessage("");
-      fetch("http://localhost:5000/churches/newChurch/", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          "content-Type": "application/json",
-        },
-      })
-        .then((res) => res.json())
+      api
+        .post("/churches/newChurch/", data)
         .then((response) => {
           handleImageUpload(response._id);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
       setErrorMessage(
         "Els camps Població, Provincia i Coordendades GPS són obligatoris, a demés, ha de constar també un Nom i un Estil arquitectònic o Segle. Pots comprovar les dades introduides en la part dreta de la pantalla"
@@ -225,9 +216,15 @@ const NewChurch = ({ setPreviewNewChurch }) => {
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
+            <select onChange={(e) => setBuildType(e.target.value)}>
+              <option>Tipus d'edifici</option>
+              <option>Esglèsia</option>
+              <option>Castell</option>
+            </select>
             <button type="button" id="btName" onClick={addName}>
               Guardar nom{" "}
             </button>
+            {/* <button type="button" onClick={() => setViewStandDetails(true)}>detals</button> */}
           </div>
           <div className="inputTown">
             <input
@@ -334,18 +331,19 @@ const NewChurch = ({ setPreviewNewChurch }) => {
         </div>
 
         <div className="btnSend">
-          <button type="submit" id="btnEnviar">
+          <button type="button" id="btnEnviar" onClick={handleSubmit}>
             Enviar
           </button>
         </div>
-       
-          {errorMessage !== "" ? (
-            <div className="errorMessegeContainer">
+
+        {errorMessage !== "" ? (
+          <div className="errorMessegeContainer">
             <p className="errorMessage">{errorMessage}</p>
-            </div>
-          ) : null}
-        
+          </div>
+        ) : null}
       </form>
+
+      {/* {viewStandDetails ? <StandOutDetail/> : null } */}
     </div>
   );
 };

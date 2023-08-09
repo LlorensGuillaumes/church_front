@@ -1,26 +1,50 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import "./Filter.css";
 
-const Filter = ({ setFilter, apiData, setDataFiltered }) => {
+const Filter = ({
+  setFilter,
+  apiData,
+  setDataFiltered,
+  currentFilterItems,
+  setCurrentFilterItems,
+}) => {
   const [filterItems, setFilterItems] = useState({
     architectonicStyle: [],
     centuryList: [],
     detailTypes: [],
   });
 
+  const [allCheckboxesSelected, setAllCheckboxesSelected] = useState(true);
+
+  useEffect(() => {
+    if (currentFilterItems) {
+      setFilterItems(currentFilterItems);
+    }
+  }, [currentFilterItems]);
+
+  const handleToggleAllCheckboxes = () => {
+    setAllCheckboxesSelected((prev) => !prev);
+    if (allCheckboxesSelected) {
+      setFilterItems({
+        architectonicStyle: architectonicStyles,
+        centuryList: centuries,
+        detailTypes: detailTypes,
+      });
+    } else {
+      setFilterItems({
+        architectonicStyle: [],
+        centuryList: [],
+        detailTypes: [],
+      });
+    }
+  };
+
   const fnFiltrar = () => {
-    // console.log(filterItems);
     let filterOK = [];
 
-    // console.log(apiData);
     for (const element of apiData) {
-      // console.log("ELEMENT");
-      // console.log(element);
-
       if (filterItems.architectonicStyle.length > 0) {
-        // console.log("té architectonicStyles");
         for (const style of filterItems.architectonicStyle) {
-          // console.log("style");
-          // console.log(style);
           if (element.architectonicStyle.includes(style)) {
             if (!filterOK.includes(element)) {
               filterOK.push(element);
@@ -58,9 +82,8 @@ const Filter = ({ setFilter, apiData, setDataFiltered }) => {
     setDataFiltered(filterOK);
 
     setFilter("filter");
+    setCurrentFilterItems(filterItems);
   };
-
-  // console.log(apiData);
 
   const centuries = [];
   const architectonicStyles = [];
@@ -71,16 +94,12 @@ const Filter = ({ setFilter, apiData, setDataFiltered }) => {
     const architectonicStyleList = church.architectonicStyle;
     const details = church.churchDetail;
 
-    // console.log(details);
-
     for (const detail of details) {
       const detailType = detail.detailType;
       if (!detailTypes.includes(detailType)) {
         detailTypes.push(detailType);
       }
     }
-
-    // console.log(detailTypes);
 
     for (const century of centuryList) {
       if (!centuries.includes(century)) {
@@ -95,10 +114,6 @@ const Filter = ({ setFilter, apiData, setDataFiltered }) => {
     }
   }
 
-  // console.log(centuries);
-  // console.log(architectonicStyles);
-  // console.log(detailTypes);
-
   const handleCheckboxChange = (event) => {
     const { name, value, checked } = event.target;
     setFilterItems((prevFilterItems) => ({
@@ -111,49 +126,65 @@ const Filter = ({ setFilter, apiData, setDataFiltered }) => {
 
   return (
     <div>
-      <div className="architectonicStyle">
-        {architectonicStyles.map((item) => (
-          <label key={item}>
-            <input
-              type="checkbox"
-              name="architectonicStyle"
-              value={item}
-              checked={filterItems.architectonicStyle.includes(item)}
-              onChange={handleCheckboxChange}
-            />
-            {item}
-          </label>
-        ))}
+      <div className="selectAll">
+        <input type="checkbox" onChange={handleToggleAllCheckboxes} />
+        <label>MOSTRAR / AMAGAR TOTS</label>
       </div>
-      <div className="centuryList">
-        {centuries.map((item) => (
-          <label key={item}>
-            <input
-              type="checkbox"
-              name="centuryList"
-              value={item}
-              checked={filterItems.centuryList.includes(item)}
-              onChange={handleCheckboxChange}
-            />
-            {item}
-          </label>
-        ))}
+      <div className="filterContainer">
+        <div className="columnItems">
+          <h3>Estils arquitectònics</h3>
+          <div className="stylesItems">
+            {architectonicStyles.map((item) => (
+              <label key={item}>
+                <input
+                  type="checkbox"
+                  name="architectonicStyle"
+                  value={item}
+                  checked={filterItems.architectonicStyle.includes(item)}
+                  onChange={handleCheckboxChange}
+                />
+                {item}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className="columnItems">
+          <h3>Segles</h3>
+          <div className="stylesItems">
+            {centuries.map((item) => (
+              <label key={item}>
+                <input
+                  type="checkbox"
+                  name="centuryList"
+                  value={item}
+                  checked={filterItems.centuryList.includes(item)}
+                  onChange={handleCheckboxChange}
+                />
+                {item}
+              </label>
+            ))}
+          </div>
+        </div>
+        <div className="detailType">
+          {detailTypes.map((item) => (
+            <label key={item}>
+              <input
+                type="checkbox"
+                name="detailTypes"
+                value={item}
+                checked={filterItems.detailTypes.includes(item)}
+                onChange={handleCheckboxChange}
+              />
+              {item}
+            </label>
+          ))}
+        </div>
+        {/* <button onClick={handleToggleAllCheckboxes}>{allCheckboxesSelected ? "MARCAR TOTS" : "ESBORRAR TOTS"}</button> */}
       </div>
-      <div className="detailType">
-        {detailTypes.map((item) => (
-          <label key={item}>
-            <input
-              type="checkbox"
-              name="detailTypes"
-              value={item}
-              checked={filterItems.detailTypes.includes(item)}
-              onChange={handleCheckboxChange}
-            />
-            {item}
-          </label>
-        ))}
+      <div className="btnAplicateFilters">
+        <button onClick={fnFiltrar}> APLICAR FILTRES </button>
       </div>
-      <button onClick={fnFiltrar}> APLICAR FILTROS </button>
     </div>
   );
 };
