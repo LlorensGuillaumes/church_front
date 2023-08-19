@@ -1,15 +1,13 @@
 const BASE_URL = "http://localhost:5000";
 
-const getToken = () => {
-  return localStorage.getItem("token");
-};
+const token = localStorage.getItem('token');
 
 const api = {
   get: async (endpoint) => {
     try {
       const response = await fetch(BASE_URL + endpoint, {
         headers: {
-          Authorization: `Bearer ${getToken()}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const data = await response.json();
@@ -24,7 +22,7 @@ const api = {
       const response = await fetch(BASE_URL + endpoint, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${getToken()}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
@@ -43,7 +41,7 @@ const api = {
       const response = await fetch(BASE_URL + endpoint, {
         method: "PUT",
         headers: {
-          Authorization: `Bearer ${getToken()}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
@@ -61,7 +59,7 @@ const api = {
       const response = await fetch(BASE_URL + endpoint, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${getToken()}`,
+          Authorization: `Bearer ${token}`,
         },
         body: formData,
       });

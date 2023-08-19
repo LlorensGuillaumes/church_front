@@ -7,15 +7,13 @@ const Carrousel = ({ carouselData, dataType }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [datos, setDatos] = useState([]);
 
-  console.log(dataType)
-
   useEffect(() => {
     if (dataType === 'exist') {
       setDatos(
         carouselData.map((src) => ({
           headerText: null,
           subText: null,
-          image: 'http://localhost:5000/churches/getImages/' + src,
+          image: `http://localhost:5000/churches/getImages/${src}`,
         }))
       );
     } else {
@@ -29,9 +27,7 @@ const Carrousel = ({ carouselData, dataType }) => {
     }
   }, [dataType, carouselData]);
 
-  const handleSlideChange = (currentIndex) => {
-    setCurrentSlide(currentIndex);
-  };
+
 
   return (
     <div className='container'>
@@ -44,11 +40,9 @@ const Carrousel = ({ carouselData, dataType }) => {
         headerTextType='black'
         subTextType='white'
         size='normal'
-        onSlideChange={handleSlideChange}
+       
       />
-      <p id='actualPosition'>
-        Imagen {currentSlide + 1} de {datos.length}
-      </p>
+  
     </div>
   );
 };

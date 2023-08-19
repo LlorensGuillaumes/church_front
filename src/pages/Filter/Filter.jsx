@@ -2,25 +2,98 @@ import React, { useEffect, useState } from "react";
 import "./Filter.css";
 
 const Filter = ({
-  setFilter,
   apiData,
   setDataFiltered,
-  currentFilterItems,
-  setCurrentFilterItems,
+  
 }) => {
   const [filterItems, setFilterItems] = useState({
     architectonicStyle: [],
     centuryList: [],
     detailTypes: [],
+    buildTypes: [],
   });
 
   const [allCheckboxesSelected, setAllCheckboxesSelected] = useState(true);
 
   useEffect(() => {
-    if (currentFilterItems) {
-      setFilterItems(currentFilterItems);
+    let filteredData = [...apiData];
+
+    if (filterItems.architectonicStyle.length > 0) {
+      filteredData = filteredData.filter((element) =>
+        filterItems.architectonicStyle.some((style) =>
+          element.architectonicStyle.includes(style)
+        )
+      );
     }
-  }, [currentFilterItems]);
+
+    if (filterItems.centuryList.length > 0) {
+      filteredData = filteredData.filter((element) =>
+        filterItems.centuryList.some((century) =>
+          element.century.includes(century)
+        )
+      );
+    }
+
+    if (filterItems.buildTypes.length > 0) {
+      filteredData = filteredData.filter((element) =>
+        filterItems.buildTypes.some((type) => element.buildType.includes(type))
+      );
+    }
+
+    if (filterItems.detailTypes.length > 0) {
+      filteredData = filteredData.filter((element) =>
+        filterItems.detailTypes.some((detailType) =>
+          element.churchDetail.some(
+            (churchDetail) => churchDetail.detailType === detailType
+          )
+        )
+      );
+    }
+
+    setDataFiltered(filteredData);
+  }, [filterItems, apiData, setDataFiltered]);
+
+  
+  
+  
+
+  const centuries = [];
+  const architectonicStyles = [];
+  const detailTypes = [];
+  const buildTypeList = [];
+
+  for (const church of apiData) {
+    const centuryList = church.century;
+    const architectonicStyleList = church.architectonicStyle;
+    const details = church.churchDetail;
+    const buildType = church.buildType;
+
+    if (!buildTypeList.includes(buildType) && buildType !== "") {
+      buildTypeList.push(buildType);
+    }
+
+    for (const detail of details) {
+      const detailType = detail.detailType;
+      if (!detailTypes.includes(detailType) && detailType !== "") {
+        detailTypes.push(detailType);
+      }
+    }
+
+    for (const century of centuryList) {
+      if (!centuries.includes(century) && century !== "") {
+        centuries.push(century);
+      }
+    }
+
+    for (const architectonicStyle of architectonicStyleList) {
+      if (
+        !architectonicStyles.includes(architectonicStyle) &&
+        architectonicStyle !== ""
+      ) {
+        architectonicStyles.push(architectonicStyle);
+      }
+    }
+  }
 
   const handleToggleAllCheckboxes = () => {
     setAllCheckboxesSelected((prev) => !prev);
@@ -29,90 +102,17 @@ const Filter = ({
         architectonicStyle: architectonicStyles,
         centuryList: centuries,
         detailTypes: detailTypes,
+        buildTypes: buildTypeList,
       });
     } else {
       setFilterItems({
         architectonicStyle: [],
         centuryList: [],
         detailTypes: [],
+        buildTypes:[],
       });
     }
   };
-
-  const fnFiltrar = () => {
-    let filterOK = [];
-
-    for (const element of apiData) {
-      if (filterItems.architectonicStyle.length > 0) {
-        for (const style of filterItems.architectonicStyle) {
-          if (element.architectonicStyle.includes(style)) {
-            if (!filterOK.includes(element)) {
-              filterOK.push(element);
-              break;
-            }
-          }
-        }
-      }
-
-      if (filterItems.centuryList.length > 0) {
-        for (const century of filterItems.centuryList) {
-          if (element.century.includes(century)) {
-            if (!filterOK.includes(element)) {
-              filterOK.push(element);
-              break;
-            }
-          }
-        }
-      }
-
-      if (filterItems.detailTypes.length > 0) {
-        for (const detailType of filterItems.detailTypes) {
-          for (const churchDetail of element.churchDetail) {
-            if (churchDetail.detailType === detailType) {
-              if (!filterOK.includes(element)) {
-                filterOK.push(element);
-                break;
-              }
-            }
-          }
-        }
-      }
-    }
-
-    setDataFiltered(filterOK);
-
-    setFilter("filter");
-    setCurrentFilterItems(filterItems);
-  };
-
-  const centuries = [];
-  const architectonicStyles = [];
-  const detailTypes = [];
-
-  for (const church of apiData) {
-    const centuryList = church.century;
-    const architectonicStyleList = church.architectonicStyle;
-    const details = church.churchDetail;
-
-    for (const detail of details) {
-      const detailType = detail.detailType;
-      if (!detailTypes.includes(detailType)) {
-        detailTypes.push(detailType);
-      }
-    }
-
-    for (const century of centuryList) {
-      if (!centuries.includes(century)) {
-        centuries.push(century);
-      }
-    }
-
-    for (const architectonicStyle of architectonicStyleList) {
-      if (!architectonicStyles.includes(architectonicStyle)) {
-        architectonicStyles.push(architectonicStyle);
-      }
-    }
-  }
 
   const handleCheckboxChange = (event) => {
     const { name, value, checked } = event.target;
@@ -125,7 +125,7 @@ const Filter = ({
   };
 
   return (
-    <div>
+    <div className="bigFilterContainer">
       <div className="selectAll">
         <input type="checkbox" onChange={handleToggleAllCheckboxes} />
         <label>MOSTRAR / AMAGAR TOTS</label>
@@ -148,7 +148,23 @@ const Filter = ({
             ))}
           </div>
         </div>
-
+        <div className="columnItems">
+          <h3>Tipus de Construcció</h3>
+          <div className="stylesItems">
+            {buildTypeList.map((item) => (
+              <label key={item}>
+                <input
+                  type="checkbox"
+                  name="buildTypes"
+                  value={item}
+                  checked={filterItems.buildTypes?.includes(item)}
+                  onChange={handleCheckboxChange}
+                />
+                {item}
+              </label>
+            ))}
+          </div>
+        </div>
         <div className="columnItems">
           <h3>Segles</h3>
           <div className="stylesItems">
@@ -166,24 +182,26 @@ const Filter = ({
             ))}
           </div>
         </div>
-        <div className="detailType">
-          {detailTypes.map((item) => (
-            <label key={item}>
-              <input
-                type="checkbox"
-                name="detailTypes"
-                value={item}
-                checked={filterItems.detailTypes.includes(item)}
-                onChange={handleCheckboxChange}
-              />
-              {item}
-            </label>
-          ))}
-        </div>
-        {/* <button onClick={handleToggleAllCheckboxes}>{allCheckboxesSelected ? "MARCAR TOTS" : "ESBORRAR TOTS"}</button> */}
-      </div>
-      <div className="btnAplicateFilters">
-        <button onClick={fnFiltrar}> APLICAR FILTRES </button>
+
+        {detailTypes && detailTypes.length > 0 ? (
+          <div className="columnItems">
+            <h3>Detalls</h3>
+            <div className="stylesItems">
+              {detailTypes.map((item) => (
+                <label key={item}>
+                  <input
+                    type="checkbox"
+                    name="detailTypes"
+                    value={item}
+                    checked={filterItems.detailTypes.includes(item)}
+                    onChange={handleCheckboxChange}
+                  />
+                  {item}
+                </label>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faSignInAlt } from "@fortawesome/free-solid-svg-icons";
 import api from "../../shared/API/Api";
@@ -8,17 +8,22 @@ const NavBar = ({
   setFilter,
   setPrincipalView,
   setSelectedChurch,
-  setDataType,
   user,
   setUser,
-  setStandOutDetailsView,
 }) => {
-  const [buttonText, setButtonText] = useState("INTRODUIR NOVA ESGLÈSIA");
   const [inputUser, SetInputUser] = useState("");
   const [inputPasword, SetInputPasword] = useState("");
+  const [btnFilterText, setBtnFilteText] = useState("FILTRAR");
+  const [selectedValue, setSelectedValue] = useState("admin")
 
   const fnOpcionesFiltro = () => {
-    setFilter("filter");
+    if (btnFilterText === "FILTRAR") {
+      setFilter("filter");
+      setBtnFilteText("VEURE LLISTAT");
+    } else if (btnFilterText === "VEURE LLISTAT") {
+      setFilter("listView");
+      setBtnFilteText("FILTRAR");
+    }
   };
 
   if (!user) {
@@ -35,40 +40,48 @@ const NavBar = ({
   }
 
   const fnViewNewChurch = () => {
-    if (buttonText === "INTRODUIR NOVA ESGLÈSIA") {
-      setPrincipalView("newChurch");
-      setButtonText("SORTIR SENSE GUARDAR");
-      setSelectedChurch("");
-      setStandOutDetailsView(false);
-    } else if (buttonText === "SORTIR SENSE GUARDAR") {
-      setPrincipalView("map");
-      setButtonText("INTRODUIR NOVA ESGLÈSIA");
-      setDataType("exist");
-      setSelectedChurch("");
-    }
+    setPrincipalView("newChurch");
+    setSelectedChurch("");
   };
 
   const fnLogin = () => {
-    console.log(user);
+
+
     if (!user) {
       const loginData = {
         mail: inputUser,
         password: inputPasword,
       };
 
-      console.log(loginData);
       api
         .post("/users/login", loginData)
         .then((response) => {
+   
           localStorage.setItem("token", response.token);
-          setUser(response.UserDB);
+      
+          setUser(response.userDB);
         })
         .catch((error) => {});
     } else {
       setUser(null);
-      localStorage.removeItem("tokken");
+      localStorage.removeItem("token");
     }
   };
+  
+    
+
+    const handleSelectedChange = (selectedValue) => {
+    if (selectedValue === "newBuilding") {
+      setSelectedValue('admin')
+      fnViewNewChurch();
+      
+    } else if (selectedValue === "admin") {
+    } else if (selectedValue === "list") {
+    } else {
+    }
+  };
+  
+  
 
   return (
     <div className="navBar">
@@ -81,13 +94,13 @@ const NavBar = ({
           <div>
             <input
               type="text"
-              placeholder="mail"
+              placeholder="admin@admin.com"
               className="logInput"
               onChange={(e) => SetInputUser(e.target.value)}
             />
             <input
               type="text"
-              placeholder="pasword"
+              placeholder="admin1234@"
               className="logInput"
               onChange={(e) => SetInputPasword(e.target.value)}
             />
@@ -110,25 +123,44 @@ const NavBar = ({
           )}
         </button>
       </div>
-
       <div className="pageTitle">
-        <h1>TURISME ARQUITECTÒNIC</h1>
+        <h1>BeepBUILDING</h1>
       </div>
       <div className="navBarButtons">
         <div className="leftButtons">
           <button onClick={fnOpcionesFiltro} className="btnNavbar">
-            FILTRAR
+            {btnFilterText}
           </button>
-          {!user ? null : user.rol === "AD" || user.rol === "SA" ? (
-            <button onClick={fnViewNewChurch} className="btnNavbar">
-              {buttonText}
-            </button>
-          ) : null}
+          <button
+            className="btnNavbar"
+            onClick={() => {
+              setPrincipalView("mapView");
+            }}
+          >
+            MAPA
+          </button>
+          {user && (user.rol === "AD" || user.rol === "SA") && (
+            <select
+              className="droboxNavbar"
+              value={selectedValue}
+              onChange={(e) => handleSelectedChange(e.target.value)}
+            >
+              <option value="admin" className="btnNavbarDp">
+                ADMIN
+              </option>
+              <option value="newBuilding" className="btnNavbarDp">
+                NOU EDIFICI
+              </option>
+              <option value="Listats" className="btnNavbarDp">
+                LLISTATS
+              </option>
+            </select>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-//<p key = {item._id} > {item.churchDetail}</p>
+
 export default NavBar;

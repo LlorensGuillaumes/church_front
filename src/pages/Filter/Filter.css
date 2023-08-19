@@ -1,9 +1,11 @@
 .filterContainer{
     display: flex;
+    flex-wrap: wrap;
+    width: 100%;
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
-    padding-left: 40px;
+    padding-left: 20px;
 
 
 }
@@ -17,21 +19,17 @@
 .columnItems{
     margin-left: 5px;
     margin-right: 5px;
+    margin-bottom: 10px;
     display: flex;
     flex-direction: column;
     width: 200px;
     font-size: 16px;
 }
-.btnAplicateFilters{
-    display: flex;
-    justify-content: start;
-    margin-top: 25px;
-    padding-left: 20%;
-    
-}
+
 h3{
     color: white;
     border-bottom: 2px solid white;
+    font-size: 14px;
 }
 .selectAll{
     display: flex;
@@ -41,3 +39,10 @@ h3{
 
 }
 
+.bigFilterContainer{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+
+}

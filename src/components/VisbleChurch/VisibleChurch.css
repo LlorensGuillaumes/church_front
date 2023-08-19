@@ -1,0 +1,34 @@
+.listContainer{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 80vh;
+    overflow: auto;
+    border-top: solid 2px white;
+    border-left: solid 2px white;
+    border-right: solid 2px white;
+}
+.listItem{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: solid 2px white;
+    width: 98%;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+.imgContainer {
+    display: flex;
+    width: 100px;
+    height: 70px;
+}
+.imgItem {
+    width: 100%;
+    object-fit: contain;
+    object-position: center;
+    margin-top: 5px;
+}
+.churchName{
+    /* font-size: calc(4vw + 12px); */
+}

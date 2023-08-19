@@ -3,11 +3,23 @@
   flex-direction: column;
 }
 .btnNavbar {
-  background-color: transparent;
+  background-color: transparent; 
   color: aliceblue;
   margin-left: 20px;
   border-style: none;
+  font-weight: bold;
 }
+.btnNavbarDp{
+  font-size: 10px;
+}
+.dropboxnavBar{
+  border-style: none;
+  border: none;
+  font-size: 100%;
+  border-image: none;
+  
+}
+
 .navBarButtons {
   display: flex;
   justify-content: space-between;
@@ -46,3 +58,6 @@
   font-size: 40px;
   margin-right: 15px;
 }
+
+
+

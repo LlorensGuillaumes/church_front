@@ -1,12 +1,20 @@
 import React, { useEffect, useState } from "react";
 import "./NewChurch.css";
 import api from "../../shared/API/Api";
-import StandOutDetail from "../StandOutDetails/StandOutDetails";
-//import Carrousel from "../../components/Carrousel/Carrousel";
+import loading from "../../components/Images/loading.gif";
 
-const NewChurch = ({ setPreviewNewChurch, setPrincipalView }) => {
-  const [name, setName] = useState(""); // Variable para almacenar el valor del formulario
-  const [placeHolderName, setPlaceHolderName] = useState("  Introduir nom");
+const NewChurch = ({
+  setPrincipalView,
+  setFilter,
+  buildingDetails,
+  dataSelect,
+  setDataSelect,
+  fetchData,
+}) => {
+  
+
+  const [name, setName] = useState("");
+  const [placeHolderName, setPlaceHolderName] = useState("Introduir nom");
   const [listNames, setListNames] = useState([]);
   const [description, setDescription] = useState("");
   const [townLocation, setTownLocation] = useState("");
@@ -21,33 +29,14 @@ const NewChurch = ({ setPreviewNewChurch, setPrincipalView }) => {
   const [century, setCentury] = useState("");
   const [listCentury, setListCentury] = useState([]);
 
-  //const [images, setImages] = useState([]);
   const [web, setWeb] = useState("");
   const [property, setProperty] = useState("");
   const [buildType, setBuildType] = useState("");
-  //const [selectedImage, setSelectedImage] = useState(null);
 
-  //const [details, setDetails] = useState([]);
-
-  //const [detailType, setdetailType] = useState("");
-  //const [detailDescription, setDetailDescription] = useState("");
-  //const [year, setYear] = useState("");
-  //const [detailImages, setDetailImages] = useState([]);
-
-  const [dataSelect, setDataSelect] = useState({});
   const [imagesURL, setImagesURL] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
-  const [viewStandDetails, setViewStandDetails] = useState(false);
-
-  //const [churchToSave, SetChurchToSave] = useState("");
-
-  useEffect(() => {
-    if (listNames.length > 0) {
-      setPlaceHolderName("  Altres noms");
-    } else {
-      setPlaceHolderName("  Introduir nom");
-    }
-  }, [listNames]);
+  const [isSaving, setIsSaving] = useState(false);
+  const [btnText, setBtnText] = useState('Cancelar');
 
   useEffect(() => {
     api
@@ -58,48 +47,33 @@ const NewChurch = ({ setPreviewNewChurch, setPrincipalView }) => {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [setDataSelect]);
+  
+    useEffect(() => {
+    setFilter("StandOut");
+  }, [setFilter]);
 
-  useEffect(() => {
-    setPreviewNewChurch([
-      {
-        name: listNames,
-        description: description,
-        townLocation: townLocation,
-        churchProvince: province,
-        architectonicStyle: listArchitectonicStyle,
-        century: listCentury,
-        images: imagesURL.map((item) => item.objectURL),
-        churchWeb: web,
-        churchProperty: property,
-        buildType: buildType,
-      },
-    ]);
-  }, [
-    listNames,
-    description,
-    townLocation,
-    province,
-    listArchitectonicStyle,
-    listCentury,
-    imagesURL,
-    web,
-    property,
-    setPreviewNewChurch,
-    buildType,
-  ]);
-
+   useEffect(() => {
+    if (listNames.length > 0) {
+      setPlaceHolderName("  Altres noms");
+    } else {
+      setPlaceHolderName("  Introduir nom");
+    }
+  }, [listNames]); 
+  
   const fnAddImagesDb = (saveNames, id) => {
     const data = {
       images: saveNames.saveNames,
+      churchDetail: buildingDetails,
     };
 
-    console.log(data);
-
     api
-      .put(`churces/modifyChurch/${id}`, data)
+      .put(`/churches/modifyChurch/${id}`, data)
       .then((response) => {
+        setIsSaving(false);
         setPrincipalView("mapView");
+        setFilter("listView");
+        fetchData();
       })
       .catch((error) => console.log(error));
   };
@@ -133,55 +107,16 @@ const NewChurch = ({ setPreviewNewChurch, setPrincipalView }) => {
     formData.append("churchId", _id);
 
     api
-      .postFormData("churches/images", formData)
+      .postFormData("/churches/images", formData)
       .then((response) => {
         fnAddImagesDb(response, _id);
       })
       .catch((error) => console.log(error));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Evitar que la página se recargue al enviar el formulario
-    const data = {
-      name: listNames,
-      description: description,
-      townLocation: townLocation,
-      province: province,
-      locationGPS: [latGPS, lonGPS],
-      architectonicStyle: listArchitectonicStyle,
-      century: listCentury,
-      web: web,
-      buildType: buildType,
-    };
-
-    if (
-      data.name.length > 0 &&
-      data.description !== "" &&
-      data.townLocation !== "" &&
-      data.province !== "" &&
-      data.locationGPS[0] !== "" &&
-      data.locationGPS[1] !== "" &&
-      (data.architectonicStyle.length > 0 || data.century.length > 0)
-    ) {
-      setErrorMessage("");
-      api
-        .post("/churches/newChurch/", data)
-        .then((response) => {
-          handleImageUpload(response._id);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      setErrorMessage(
-        "Els camps Població, Provincia i Coordendades GPS són obligatoris, a demés, ha de constar també un Nom i un Estil arquitectònic o Segle. Pots comprovar les dades introduides en la part dreta de la pantalla"
-      );
-    }
-  };
-
   const addName = () => {
     if (!listNames.includes(name)) {
-      setListNames([...listNames, name]);
+      setListNames([...listNames, name.toUpperCase()]);
     }
     setName("");
   };
@@ -204,10 +139,77 @@ const NewChurch = ({ setPreviewNewChurch, setPrincipalView }) => {
     }
   };
 
+  const fnCancelar = () =>{
+    if(btnText === "Confirmar"){
+        setPrincipalView('mapView')
+    }
+    if(btnText === 'Cancelar'){
+      setBtnText('Confirmar')
+    }
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Evitar que la página se recargue al enviar el formulario
+    setIsSaving(true);
+    const data = {
+      name: listNames,
+      description: description,
+      townLocation: townLocation,
+      province: province,
+      locationGPS: [latGPS, lonGPS],
+      architectonicStyle: listArchitectonicStyle,
+      century: listCentury,
+      web: web,
+      buildType: buildType,
+    };
+
+    if (
+      data.name.length > 0 &&
+      data.description !== "" &&
+      data.townLocation !== "" &&
+      data.province !== "" &&
+      data.locationGPS[0] !== "" &&
+      data.locationGPS[1] !== "" &&
+      (data.architectonicStyle.length > 0 || data.century.length > 0) &&
+      data.buildType !== ""
+    ) {
+      setErrorMessage("");
+      api
+        .post("/churches/newChurch/", data)
+        .then((response) => {
+          handleImageUpload(response._id);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      setErrorMessage(
+        "Els camps Tipus d'edifici, Població, Provincia i Coordendades GPS són obligatoris, a demés, ha de constar també un Nom i un Estil arquitectònic o Segle. Pots comprovar les dades introduides en la part dreta de la pantalla"
+      );
+    }
+  };
+
+
+
+  
   return (
     <div className="page">
+      <div className="loading" style={{display: isSaving ? "flex" : "none"}}>
+        <img src={loading} alt="Loading" />
+      </div>
+
       <form onSubmit={handleSubmit} className="form">
         <div>
+          <select onChange={(e) => setBuildType(e.target.value)}>
+            <option>Tipus d'edifici</option>
+            {dataSelect[0] && dataSelect[0].buildingTypes ? (
+              dataSelect[0].buildingTypes.map((item, index) => (
+                <option key={index}>{item}</option>
+              ))
+            ) : (
+              <option>No hay options </option>
+            )}
+          </select>
           <div className="inputName">
             <input
               placeholder={placeHolderName}
@@ -216,16 +218,20 @@ const NewChurch = ({ setPreviewNewChurch, setPrincipalView }) => {
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-            <select onChange={(e) => setBuildType(e.target.value)}>
-              <option>Tipus d'edifici</option>
-              <option>Esglèsia</option>
-              <option>Castell</option>
-            </select>
+
             <button type="button" id="btName" onClick={addName}>
-              Guardar nom{" "}
+              Guardar nom
             </button>
-            {/* <button type="button" onClick={() => setViewStandDetails(true)}>detals</button> */}
+
+            <div className="namesList">
+              {listNames && listNames.length > 0 ? (
+                listNames.map((item, index) => <p key={index}>{item}</p>)
+              ) : (
+                <p>No hi ha noms guardats</p>
+              )}
+            </div>
           </div>
+
           <div className="inputTown">
             <input
               type="text"
@@ -238,7 +244,7 @@ const NewChurch = ({ setPreviewNewChurch, setPrincipalView }) => {
               type="text"
               id="province"
               value={province}
-              placeholder="  Provincia"
+              placeholder="Provincia"
               onChange={(e) => setProvince(e.target.value)}
             />
           </div>
@@ -280,6 +286,18 @@ const NewChurch = ({ setPreviewNewChurch, setPrincipalView }) => {
               Add
             </button>
 
+            <div className="namesList">
+              <div className="listAdd">
+                {listArchitectonicStyle && listArchitectonicStyle.length > 0 ? (
+                  listArchitectonicStyle.map((item, index) => (
+                    <p key={index}>{item}</p>
+                  ))
+                ) : (
+                  <p>Estils</p>
+                )}
+              </div>
+            </div>
+
             <select
               id="century"
               value={century}
@@ -297,6 +315,13 @@ const NewChurch = ({ setPreviewNewChurch, setPrincipalView }) => {
             <button type="button" onClick={addCentury}>
               Add
             </button>
+            <div className="listAdd">
+              {listCentury && listCentury.length > 0 ? (
+                listCentury.map((item, index) => <p key={index}>{item}</p>)
+              ) : (
+                <p>Segles</p>
+              )}
+            </div>
           </div>
 
           <div className="inputDescription">
@@ -334,6 +359,9 @@ const NewChurch = ({ setPreviewNewChurch, setPrincipalView }) => {
           <button type="button" id="btnEnviar" onClick={handleSubmit}>
             Enviar
           </button>
+          <button type="button" id="btnEnviar" onClick={()=>{fnCancelar()}}>
+            {btnText}
+          </button>
         </div>
 
         {errorMessage !== "" ? (
@@ -342,8 +370,6 @@ const NewChurch = ({ setPreviewNewChurch, setPrincipalView }) => {
           </div>
         ) : null}
       </form>
-
-      {/* {viewStandDetails ? <StandOutDetail/> : null } */}
     </div>
   );
 };

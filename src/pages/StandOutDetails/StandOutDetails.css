@@ -1,0 +1,46 @@
+.detailsContent{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.newDetail{
+    display: flex;
+    flex-direction: column;
+}
+.type_year{
+    display: flex;
+    margin-bottom: 5px;
+    justify-content: flex-start;
+}
+.type_year_list{
+    display: flex;
+    margin-bottom: 5px;
+    justify-content: flex-start;
+    border-bottom: solid 2px white;
+    padding: 5px;
+}
+.inputDescriptionDetail{
+    width: 100%;
+    height: auto;
+    margin-right: 20px;
+    text-align: justify;
+  
+  
+}
+.detailsList{
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin-bottom: 5px;
+    border: solid 2px white;
+
+}
+.pList{
+    width: 40%;
+}
+.buttonAdd{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

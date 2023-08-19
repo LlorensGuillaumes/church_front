@@ -29,22 +29,7 @@
     padding: 20px;
 }
 
-.detailDiv{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    width: 30%;
-    
-}
-.info{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-left: 25px;
-   
-}
+
 .description{
     margin-top: 25px;
     margin-bottom: 25px;
@@ -146,7 +131,7 @@ margin-top: 10px;
 
 .btnSend{
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     margin-top: 30px;
 
 }
@@ -171,4 +156,29 @@ margin-top: 10px;
     font-weight: bold;
     text-align: center;
 
+}
+
+.namesList{
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+
+}
+.listAdd{
+    margin-left: 5px;
+}
+
+.loading{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 999;
+    border-radius: 10px;
+    display: none;
 }

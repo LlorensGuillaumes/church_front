@@ -2,37 +2,115 @@ import React, { useEffect, useState } from "react";
 import "./StandOutDetails.css";
 import Carrousel from "../../components/Carrousel/Carrousel";
 
-const StandOutDetail = ({ StandOutDetailView, standOutDetailsData }) => {
-  const [myData, setMyData] = useState([]);
+const StandOutDetail = ({
+  standOutDetailsData,
+  selectedChurch,
+  buildingDetails,
+  setBuildingDetails,
+  dataSelect
+}) => {
+  //const [myData, setMyData] = useState([]);                                                              
+  const [newDetailTye, setNewDetailType] = useState("");
+  const [newDetailDescription, setNewDetailDesription] = useState("");
+  const [newDetailYear, setNewDetailYear] = useState("");
+  const [messageError, setMessageError] = useState("");
 
-  useEffect(() => {
-    if (standOutDetailsData && standOutDetailsData.length > 0) {
-      setMyData(standOutDetailsData);
+  
+  // useEffect(() => {
+  //   if (standOutDetailsData && standOutDetailsData.length > 0) {
+  //     //setMyData(standOutDetailsData);
+  //   } else {
+  //     // setMyData([
+  //     //   {
+  //     //     detailType: "soy detalle",
+  //     //     description: "soy descripcion",
+  //     //     year: "soyaños",
+  //     //   },
+  //     ]);
+  //   }
+  // }, [standOutDetailsData]);
+
+  const fnAddDetail = () => {
+    if (
+      newDetailTye !== "" &&
+      newDetailTye !== "tipus de detall" &&
+      newDetailDescription &&
+      newDetailYear
+    ) {
+      const detailBuilding = {
+        detailType: newDetailTye,
+        description: newDetailDescription,
+        year: newDetailYear,
+      };
+
+      setBuildingDetails([...buildingDetails, detailBuilding]);
+      setMessageError("");
+      setNewDetailDesription("");
+      setNewDetailYear("");
     } else {
-      setMyData([
-        {
-          detailType: "soy detalle",
-          description: "soy descripcion",
-          year: "soyaños",
-          detailImages: [],
-        },
-      ]);
+      setMessageError("Tots el camps són obligatoris");
     }
-  }, [standOutDetailsData]);
+  };
+  
+  
 
-  return (
+  return selectedChurch ? (
     <div className="detailDiv">
-      <h1>SOY DETALLES IMPORTANTES</h1>
-      {myData.map((item, index) => (
-        <div key={index}>
+      <h1>Detalls a destacar</h1>
+      {standOutDetailsData && standOutDetailsData.length >0 ? standOutDetailsData.map((item, index) => (
+        <div key={index} className="itemsContent">
           <p>{item.detailType}</p>
-          <textarea>{item.description}</textarea>
+          <textarea >{item.description}</textarea>
           <p>{item.year}</p>
 
-          {item.detailImages.length > 0 ? <Carrousel carrouselData={item.detailImages} /> : null}
-          
+        
         </div>
-      ))}
+      )):null}
+    </div>
+  ) : (
+    <div className="detailsContent">
+      <h1>detalls a destacar</h1>
+
+      {messageError ? <p className="errorMessage">{messageError}</p> : null}
+      <div className="newDetail">
+        <div className="type_year">
+          <select onChange={(e) => setNewDetailType(e.target.value)}>
+            <option>tipus de detall</option>
+            {dataSelect && dataSelect.length > 0
+              ? dataSelect[0].detailType.map((item) => <option key={item}>{item}</option>)
+              : null}
+          </select>
+
+          <input
+            placeholder="Any"
+            value={newDetailYear}
+            onChange={(e) => setNewDetailYear(e.target.value)}
+          ></input>
+        </div>
+        <textarea
+          className="inputDescriptionDetail"
+          placeholder="Descripció"
+          value={newDetailDescription}
+          onChange={(e) => setNewDetailDesription(e.target.value)}
+        ></textarea>
+      </div>
+      <button type="button" onClick={fnAddDetail} className="buttonAdd">
+        Add Detail
+      </button>
+
+      <div style={{ height: "300px", overflowY: "scroll" }}>
+        {buildingDetails && buildingDetails.length > 0
+          ? buildingDetails.map((item, index) => (
+              <div key={index} className="detailsList">
+                <div className="type_year_list">
+                  <p className="pList">{item.detailType}</p>
+                  <p>{item.year}</p>
+                </div>
+                <p className="inputDescriptionDetail">{item.description}</p>
+              </div>
+            ))
+          : null}
+      </div>
     </div>
   );
 };

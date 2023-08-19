@@ -6,36 +6,38 @@ import ChurchDetail from "./pages/ChurchDetail/ChurchDetail";
 import Filter from "./pages/Filter/Filter";
 import NewChurch from "./pages/NewChurch/NewChurch";
 import api from "./shared/API/Api";
+import VisibleChurch from "./components/VisbleChurch/VisibleChurch";
+import StandOutDetail from "./pages/StandOutDetails/StandOutDetails";
+import ModifyBuilding from "./pages/ModifyBuilding/ModifyBuilding";
 
 function App() {
   const [selectedChurch, setSelectedChurch] = useState("");
-  const [standOutDetailsView, setStandOutDetailsView] = useState(true)
-  const [standOutDetailsData, setStandOutDetailsData] = useState(null)
+  const [standOutDetailsData, setStandOutDetailsData] = useState(null);
   const [apiData, setApiData] = useState([]);
   const [dataFiltered, setDataFiltered] = useState([]);
-  const [filter, setFilter] = useState("detail");
-  const [filterItems, setFilterItems] = useState({});
-  const [principalView, setPrincipalView] = useState("mapView");
-  const [preViewNewChurch, setPreviewNewChurch] = useState([]);
+  const [filter, setFilter] = useState("listView");
+  const [principalView, setPrincipalView] = useState("mapView"); 
   const [dataType, setDataType] = useState("");
-  const [currentFilterItems, setCurrentFilterItems] = useState(null);
   const [user, setUser] = useState(null);
+  const [visibleChurches, setVisibleChurches] = useState([]);
+  const [buildingDetails, setBuildingDetails] = useState([]);
+  const [dataSelect, setDataSelect] = useState({});
+  const [buildingToModify, setBuildingToModify] = useState({});
 
-  useEffect(() => {
+  const fetchData = () => {
     api
       .get("/churches")
       .then((response) => {
         setApiData(response);
         setDataFiltered(response);
-        setFilterItems({
-          architectonicStyle: true,
-          Centuries: true,
-          detailTypes: true,
-        });
       })
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
   return (
@@ -44,58 +46,71 @@ function App() {
         setFilter={setFilter}
         setPrincipalView={setPrincipalView}
         setSelectedChurch={setSelectedChurch}
-        setDataType={setDataType}
         user={user}
         setUser={setUser}
-        setStandOutDetailsView = {setStandOutDetailsView}
       />
       <div className="mapAndDetail">
         <div className="mapView">
-          {principalView === "map" ? (
+          {principalView === "mapView" ? (
             <MapView
               className="mapView"
               setSelectedChurch={setSelectedChurch}
               dataFiltered={dataFiltered}
               setFilter={setFilter}
+              setVisibleChurches={setVisibleChurches}
+              setPrincipalView={setPrincipalView}
             />
           ) : principalView === "newChurch" ? (
             <NewChurch
-              setPreviewNewChurch={setPreviewNewChurch}
               setPrincipalView={setPrincipalView}
+              setFilter={setFilter}
+              buildingDetails={buildingDetails}
+              dataSelect={dataSelect}
+              setDataSelect={setDataSelect}
+              fetchData={fetchData}
             />
-          ) : (
-            <MapView
-              className="mapView"
+          ) : principalView === "detail" ? (
+            <ChurchDetail
+              selectedChurch={selectedChurch}
+              setDataType={setDataType}
+              dataType={dataType}
+              setStandOutDetailsData={setStandOutDetailsData}
+              setPrincipalView = {setPrincipalView}
+              setBuildingToModify={setBuildingToModify}
+            />
+          ) : principalView === "buildingModify" ? (
+            <ModifyBuilding
+              buildingToModify = {buildingToModify}
+              setPrincipalView = {setPrincipalView}
+              />
+          ) : (null)}
+        </div>
+        <div className="detailView">
+          {filter === "filter" ? (
+            <Filter
+              apiData={apiData}
+              setDataFiltered={setDataFiltered}
+              
+            />
+          ) : filter === "listView" ? (
+            <VisibleChurch
+              visibleChurches={visibleChurches}
               setSelectedChurch={setSelectedChurch}
-              dataFiltered={dataFiltered}
+              setPrincipalView={setPrincipalView}
               setFilter={setFilter}
             />
+          ) : filter === "StandOut" ? (
+            <StandOutDetail
+              standOutDetailsData={standOutDetailsData}
+              selectedChurch={selectedChurch}
+              buildingDetails={buildingDetails}
+              setBuildingDetails={setBuildingDetails}
+              dataSelect={dataSelect}
+            />
+          ) : (
+            <></>
           )}
         </div>
-        {filter === "filter" ? (
-          <Filter
-            className="ChurchDetail"
-            setFilter={setFilter}
-            apiData={apiData}
-            setDataFiltered={setDataFiltered}
-            setFilterItems={setFilterItems}
-            FilterItems={filterItems}
-            currentFilterItems={currentFilterItems}
-            setCurrentFilterItems={setCurrentFilterItems}
-          />
-        ) : filter === "detail" ? (
-          <ChurchDetail
-            className="ChurcDetail"
-            selectedChurch={selectedChurch}
-            preViewNewChurch={preViewNewChurch}
-            setFilter={setFilter}
-            setDataType={setDataType}
-            dataType={dataType}
-            setStandOutDetailsData={setStandOutDetailsData}
-          />
-        ) : (
-          <></>
-        )}
       </div>
     </div>
   );
