@@ -10,6 +10,7 @@ const ChurchDetail = ({
   setStandOutDetailsData,
   setPrincipalView,
   setBuildingToModify,
+  user,
 }) => {
   const [apiData, setApiData] = useState([]);
 
@@ -47,54 +48,75 @@ const ChurchDetail = ({
       centuryList = { churchCentury }.churchCentury.toString();
     }
 
-    const fnModifyBuilding = () =>{
-      setBuildingToModify(apiData)
-      setPrincipalView('buildingModify')
-    }
+    const fnModifyBuilding = () => {
+      setBuildingToModify(apiData);
+      setPrincipalView("buildingModify");
+    };
     return (
       <div className="detailDiv">
-      <div>
-        <button onClick={()=>{fnModifyBuilding()}}>MODIFICAR</button>
-      </div>
+      {user && (user.rol === 'AD' || user.rol === 'SA') ?
+        <div className="btnAdmin">
+          <button
+            onClick={() => {
+              fnModifyBuilding();
+            }}
+            className="btnNavbar"
+          >
+            MODIFICAR
+          </button>
+        </div>
+      : null}
         <div className="info">
-       
-          <h2 className="principalName">{churchName[0]}</h2>
-          {churchProvince !== "" ? (
-            <p>
-              {churchTown} ({churchProvince})
-            </p>
-          ) : (
-            <p>{churchTown}</p>
-          )}
+          <div className="buildingTitle">
+            <div>
+              <h2 className="principalName">{churchName[0]}</h2>
+            </div>
+            {churchProvince !== "" ? (
+              <p>
+                {churchTown} ({churchProvince})
+              </p>
+            ) : (
+              <p>{churchTown}</p>
+            )}
+            <div className="buildingDatas">
+              {churchOtherNames && churchOtherNames.length > 0
+                ? churchOtherNames.map((item) => <p key={item}>{item}</p>)
+                : null}
+              <div className="detailList">
+                {churchArchitectonicStyle && churchArchitectonicStyle.length > 0
+                  ? churchArchitectonicStyle.map((item) => (
+                      <p key={item}>{item}</p>
+                    ))
+                  : null}
+              </div>
 
-          {churchOtherNames && churchOtherNames.length > 0
-            ? churchOtherNames.map((item) => <p key={item}>{item}</p>)
-            : null}
+              <div className="detailList">
+                {centuryList ? <p>s.({centuryList})</p> : null}
+              </div>
+              <div className="contact">
+                {churchProperty ? (
+                  <p>Gestionada per: {churchProperty}</p>
+                ) : null}
+                {churchGoogleMapsLink ? (
+                  <a
+                    href={churchGoogleMapsLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    googleMaps
+                  </a>
+                ) : null}
+                {churchweb ? (
+                  <a href={churchweb} target="_blank" rel="noreferrer">
+                    {" "}
+                    web: {churchName[0]}
+                  </a>
+                ) : null}
+              </div>
+            </div>
+          </div>
 
-          {churchArchitectonicStyle && churchArchitectonicStyle.length > 0
-            ? churchArchitectonicStyle.map((item) => <p key={item}>{item}</p>)
-            : null}
-
-          {centuryList ? <p>s.({centuryList})</p> : null}
-
-          {churchProperty ? <p>Gestionada per: {churchProperty}</p> : null}
-          {churchGoogleMapsLink ? (
-            <a
-              href={churchGoogleMapsLink}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              googleMaps
-            </a>
-          ) : null}
-          {churchweb ? (
-            <a href={churchweb} target="_blank" rel="noreferrer">
-              {" "}
-              web: {churchName[0]}
-            </a>
-          ) : null}
-
-          <p className="">{churchDescription}</p>
+          <p className="description">{churchDescription}</p>
         </div>
         <div className="caruselContainer">
           {churchImages && churchImages.length > 0 ? (

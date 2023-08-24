@@ -3,18 +3,26 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faSignInAlt } from "@fortawesome/free-solid-svg-icons";
 import api from "../../shared/API/Api";
 import "./navBar.css";
+import lupa  from '../../components/Images/lupa.png'
 
 const NavBar = ({
   setFilter,
   setPrincipalView,
+  principalView,
   setSelectedChurch,
   user,
   setUser,
+  setDataFiltered,
+  apiData
 }) => {
   const [inputUser, SetInputUser] = useState("");
   const [inputPasword, SetInputPasword] = useState("");
   const [btnFilterText, setBtnFilteText] = useState("FILTRAR");
-  const [selectedValue, setSelectedValue] = useState("admin")
+  const [selectedValue, setSelectedValue] = useState("admin");
+  const [listTownVisible, setListTownVisible] = useState(false);
+
+  const dataToFiltered = [...apiData];
+  
 
   const fnOpcionesFiltro = () => {
     if (btnFilterText === "FILTRAR") {
@@ -80,12 +88,56 @@ const NavBar = ({
     } else {
     }
   };
+
+  const fnViewMap = () => {
+    setPrincipalView("mapView");
+    setFilter('listView');
+  }
   
+  const [town, setTown] = useState([]);
+  const [townsData, setTownsData] = useState([]);
+  const arrTownData = [];
+
+
+  for (const townData of townsData) {
+    const townItem = townData.display_name.split(",");
+    const objTown = {
+      name: townItem[0],
+      country: townItem[townItem.length - 1],
+      zona: townItem[townItem.length - 3],
+      ubication: [townData.lat, townData.lon],
+    };
+    arrTownData.push(objTown);
+  }
+
+  const fnMapCenter = () => {
+    
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${town}`)
+      .then((response) => response.json())
+      .then((data) => setTownsData(data))
+      
+      .catch((error) => {
+        console.log(error);
+      });
+
+      setListTownVisible(true)
+  };
+
+  const fnTownClick = (item) => {
+    setDataFiltered((prevDataFiltered) => ({
+      ...prevDataFiltered,
+      center: item.ubication,
+      zoom: 10,
+      data: dataToFiltered,
+    }));
+    setListTownVisible(false)
+    arrTownData.length = 0
+  };
   
 
   return (
     <div className="navBar">
-      <div className="rightButtons">
+          <div className="rightButtons">
         {user ? (
           <div>
             <p> {user.mail} </p>
@@ -123,18 +175,61 @@ const NavBar = ({
           )}
         </button>
       </div>
-      <div className="pageTitle">
-        <h1>BeepBUILDING</h1>
-      </div>
+    <div>
+    <div className="findByTown">
+              <input
+                className="inputFindTown"
+                placeholder="On anem?"
+                onChange={(e) => {
+                  setTown(e.target.value);
+                }}
+              />
+              <button
+                className="btnFindTown"
+                onClick={() => {
+                  fnMapCenter();
+                }}
+              >
+                <img src={lupa} alt="lupa"/>
+              </button>
+
+              {listTownVisible && arrTownData && arrTownData.length > 0 ? (
+                <div className="townList">
+                  {arrTownData.map((item, index) =>
+                    item.ubication.length > 0 ? (
+                      <div
+                        key={index}
+                        className="townDataItems"
+                        onClick={() => {
+                          fnTownClick(item);
+                        }}
+                      >
+                        <div className="townDataNames">
+                          <p>
+                            {item.name}, {item.zona}
+                          </p>
+                        </div>
+                        <p>{item.country}</p>
+                      </div>
+                    ) : null
+                  )}
+                </div>
+              ) : null}
+            </div>
+    </div>
+
+
       <div className="navBarButtons">
         <div className="leftButtons">
-          <button onClick={fnOpcionesFiltro} className="btnNavbar">
+        {principalView === 'mapView' ? 
+        <button onClick={fnOpcionesFiltro} className="btnNavbar">
             {btnFilterText}
-          </button>
+          </button> : null}
+          
           <button
             className="btnNavbar"
             onClick={() => {
-              setPrincipalView("mapView");
+              fnViewMap();
             }}
           >
             MAPA

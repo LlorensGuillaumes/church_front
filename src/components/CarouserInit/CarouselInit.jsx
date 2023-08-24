@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Carousel } from '@sefailyasoz/react-carousel';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
-import './Carrousel.css';
+import './CarouselInit.css';
 
-const Carrousel = ({ carouselData, dataType, imagesFront = false }) => {
+const CarouselInit = ({ carouselData, dataType, imagesFront = false }) => {
+
   const [datos, setDatos] = useState([]);
 
   useEffect(() => {
@@ -43,7 +44,7 @@ const Carrousel = ({ carouselData, dataType, imagesFront = false }) => {
         autoPlay={true}
         rightItem={<FaAngleRight className='imageSelectors' />}
         leftItem={<FaAngleLeft className='imageSelectors' />}
-        animationDuration={3000}
+        animationDuration={1000}
         headerTextType='black'
         subTextType='white'
         size='normal'
@@ -54,4 +55,4 @@ const Carrousel = ({ carouselData, dataType, imagesFront = false }) => {
   );
 };
 
-export default Carrousel;
+export default CarouselInit;

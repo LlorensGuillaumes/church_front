@@ -56,12 +56,19 @@ const StandOutDetail = ({
 
   return selectedChurch ? (
     <div className="detailDiv">
-      <h1>Detalls a destacar</h1>
+     
       {standOutDetailsData && standOutDetailsData.length >0 ? standOutDetailsData.map((item, index) => (
         <div key={index} className="itemsContent">
-          <p>{item.detailType}</p>
-          <textarea >{item.description}</textarea>
-          <p>{item.year}</p>
+        <div className="typeYear">
+           <p>{item.detailType}</p>
+          <p>Any: {item.year}</p>
+        </div>
+        <div className="description">
+          <p >{item.description}</p>
+        </div>
+         
+          
+          
 
         
         </div>

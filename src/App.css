@@ -10,7 +10,7 @@
 *{
   margin: 0px;
   padding: 0px;
-  background-color: dimgray;
+  background-color: rgb(190, 158, 110);
 
 
   
@@ -106,7 +106,8 @@ select{
   display: flex;
   width: 60%;
   height: 80vh;
-  margin-left: 30px;
+  margin-left: 20px;
+  margin-right: 20px;
   
 }
 
