@@ -1,0 +1,37 @@
+.favouritesImgContainer{
+    width: 50%;
+
+}
+.favouritesImg{
+    width: 100%;
+    height: 185px;
+    object-fit: contain;
+    object-position: top;
+}
+.favouritesList{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    
+}
+.favouritesItem{
+    display: flex;
+    align-items: flex-start;
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-bottom: 5px;
+    width: 100%;
+}
+.dataContainer{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    align-items: flex-start;
+}
+.favouriteName{
+    margin: none !important;
+    padding: 0px !important;
+}
+.btnNavbar{
+    margin-left: 0% !important;
+}

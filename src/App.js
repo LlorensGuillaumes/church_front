@@ -11,6 +11,9 @@ import StandOutDetail from "./pages/StandOutDetails/StandOutDetails";
 import ModifyBuilding from "./pages/ModifyBuilding/ModifyBuilding";
 import InitialPage from "./pages/InitialPage/InitialPage";
 import Title from "./components/Title/Title";
+import Register from "./components/Register/Register";
+import UserSettings from "./components/UserSettings/UserSettings";
+import Favourites from "./pages/Favourites/Favourites";
 
 function App() {
   const [selectedChurch, setSelectedChurch] = useState("");
@@ -25,11 +28,14 @@ function App() {
   const [principalView, setPrincipalView] = useState("mapView");
   const [dataType, setDataType] = useState("");
   const [user, setUser] = useState(null);
+  const [dataUser, setDataUser]=useState(null);
   const [visibleChurches, setVisibleChurches] = useState([]);
   const [buildingDetails, setBuildingDetails] = useState([]);
   const [dataSelect, setDataSelect] = useState({});
   const [buildingToModify, setBuildingToModify] = useState({});
   const [viewIntitialPage, setViewInitialPage] = useState(true);
+  const [register, setRegister] = useState(false);
+  const [btnFilterText, setBtnFilteText] = useState("FILTRAR");
 
   const fetchData = () => {
     api
@@ -46,6 +52,8 @@ function App() {
       });
   };
 
+
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -61,6 +69,7 @@ function App() {
     <Title/>
       <NavBar
         setFilter={setFilter}
+        filter = {filter}
         setPrincipalView={setPrincipalView}
         principalView={principalView}
         setSelectedChurch={setSelectedChurch}
@@ -68,6 +77,12 @@ function App() {
         setUser={setUser}
         setDataFiltered={setDataFiltered}
         apiData={apiData}
+        register = {register}
+        setRegister = {setRegister}
+        btnFilterText={btnFilterText}
+        setBtnFilteText={setBtnFilteText}
+        setDataUser = {setDataUser}
+        dataUser={dataUser}
       />
 
       <div className="mapAndDetail">
@@ -102,6 +117,8 @@ function App() {
               setPrincipalView={setPrincipalView}
               setBuildingToModify={setBuildingToModify}
               user={user}
+              dataUser = {dataUser}
+              setDataUser={setDataUser}
             />
           )}
           {principalView === "buildingModify" && (
@@ -110,6 +127,14 @@ function App() {
               setPrincipalView={setPrincipalView}
             />
           )}
+          {principalView === "favourites" && (
+            <Favourites
+              dataUser = {dataUser}
+              setDataUser = {setDataUser}
+              user={user}
+            />
+          
+          )}
         </div>
         <div className="detailView">
           {filter === "filter" && (
@@ -117,6 +142,8 @@ function App() {
               apiData={apiData}
               setDataFiltered={setDataFiltered}
               dataFiltered={dataFiltered}
+              setFilter = {setFilter}
+              setBtnFilteText = {setBtnFilteText}
             />
           )}
           {filter === "listView" && (
@@ -136,6 +163,19 @@ function App() {
               dataSelect={dataSelect}
             />
           )}
+          {filter === "register" && (
+            <Register
+              setUser = {setUser}
+              setFilter = {setFilter}
+            />
+          )}
+          {filter === "userSettings" && (
+            <UserSettings
+              setFilter = {setFilter}
+              setPrincipalView = {setPrincipalView}
+            />
+          )}
+
         </div>
       </div>
     </div>

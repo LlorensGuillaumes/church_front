@@ -161,6 +161,8 @@ const NewChurch = ({
       century: listCentury,
       web: web,
       buildType: buildType,
+      puntuation: null,
+     
     };
 
     if (

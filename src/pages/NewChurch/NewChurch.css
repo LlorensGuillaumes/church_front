@@ -32,11 +32,18 @@
 
 .description{
     margin-top: 25px;
-    margin-bottom: 25px;
-    padding-right: 10px;
-    height: 150px;
-    overflow: auto;
+    /* margin-bottom: 25px; */
+    padding-right: 17px;
+    height: 100px;
+    overflow: hidden;
     text-align: justify;
+
+}
+.descriptionExtend{
+    margin-top: 25px;
+    padding-right: 17px;
+    text-align: justify;
+
 }
 h2{
     text-align: center;

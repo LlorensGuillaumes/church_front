@@ -37,6 +37,7 @@ const api = {
 
 
   put: async (endpoint, body) => {
+
     try {
       const response = await fetch(BASE_URL + endpoint, {
         method: "PUT",
@@ -50,6 +51,24 @@ const api = {
       return data;
     } catch (error) {
       console.error("Error en la petición PUT:", error);
+      throw error;
+    }
+  },
+
+  delete: async (endpoint, body) => {
+    try {
+      const response = await fetch(BASE_URL + endpoint, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error en la petición DELETE:", error);
       throw error;
     }
   },

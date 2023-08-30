@@ -23,7 +23,9 @@ const initialPage = ({ setViewInitialPage, viewIntitialPage }) => {
       </div>
 
       <div className="InitialButton">
-        <button onClick={() => setViewInitialPage(!viewIntitialPage)}>
+        <button 
+        className="btnInit"
+        onClick={() => setViewInitialPage(!viewIntitialPage)}>
           Comencem
         </button>
       </div>

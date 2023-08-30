@@ -1,34 +1,73 @@
 .listContainer{
-    width: 90%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     height: 80vh;
     overflow: auto;
     border-top: solid 2px white;
-    border-left: solid 2px white;
-    border-right: solid 2px white;
+
 }
 .listItem{
     display: flex;
     flex-direction: column;
     align-items: center;
     border-bottom: solid 2px white;
-    width: 98%;
-    padding: 5px;
+    width: 100%;
+    
     margin-bottom: 5px;
 }
 .imgContainer {
     display: flex;
-    width: 100px;
-    height: 70px;
+    width: 40%;
+    height: 84px;
+    justify-content: flex-end;
 }
 .imgItem {
     width: 100%;
     object-fit: contain;
+
+  
+}
+.image_puntuation{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    padding: 5px;
+}
+.puntuation{
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.estrella{
+    width: 50px;
+    height: 50px;
+
+}
+.picture{
+    width: 100%;
+    object-fit: cover;
     object-position: center;
-    margin-top: 5px;
+}
+.number{
+    display: flex;
 }
 .churchName{
-    /* font-size: calc(4vw + 12px); */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+.churchNameP{
+    text-align: center;
+}
+.numVal{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    margin-left: 5px;
 }

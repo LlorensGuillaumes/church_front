@@ -8,6 +8,7 @@
   margin-left: 20px;
   border-style: none;
   font-weight: bold;
+  cursor: pointer;
 }
 .btnNavbarDp{
   font-size: 10px;
@@ -43,14 +44,18 @@
 
 .loginIconLoggedIn {
   color: red;
-  font-size: 40px;
+  font-size: 25px;
   margin-right: 15px;
+  margin-left: 15px;
+  cursor: pointer;
 }
 
 .loginIconLoggedOut {
   color: rgb(114, 187, 114);
-  font-size: 40px;
+  font-size: 25px;
   margin-right: 15px;
+  margin-left: 15px;
+  cursor: pointer;
 }
 .townList{
   display: flex;
@@ -92,3 +97,11 @@
   object-position: center;
 }
 
+.dataLogin{
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+}
+.errorMesageLogIn{
+  padding-left: 27px;
+}

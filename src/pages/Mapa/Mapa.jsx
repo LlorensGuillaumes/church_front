@@ -1,18 +1,23 @@
 import React, { useRef, useEffect, useState } from "react";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Tooltip,
-} from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
 import { icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./Mapa.css";
-import esglesia from "../../components/Images/esglesia.png";
-import castell from "../../components/Images/castell.png";
+import esglesia from "../../components/Images/buildingTypes/esglesia.jpg";
+import castell from "../../components/Images/buildingTypes/castell.jpg";
+import convent from '../../components/Images/buildingTypes/convent.jpg'
 
 const churchIcon = icon({
   iconUrl: esglesia,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  tooltipAnchor: [16, -28],
+  shadowSize: [41, 41],
+});
+
+const conventIcon = icon({
+  iconUrl: convent,
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
@@ -29,8 +34,6 @@ const castleIcon = icon({
   shadowSize: [41, 41],
 });
 
-
-
 const MapView = ({
   setSelectedChurch,
   dataFiltered,
@@ -39,8 +42,6 @@ const MapView = ({
   setPrincipalView,
   setDataFiltered,
 }) => {
-
-
   const [mapPosition, setMapPosition] = useState([41.22274, 1.72389]);
   const [mapZoom, setMapZoom] = useState(10);
 
@@ -50,10 +51,10 @@ const MapView = ({
   const handleMapChange = () => {
     const newMapPosition = [map.getCenter().lat, map.getCenter().lng];
     const newMapZoom = map.getZoom();
-    
+
     setMapPosition(newMapPosition);
     setMapZoom(newMapZoom);
-  
+
     setDataFiltered((prevDataFiltered) => ({
       ...prevDataFiltered,
       center: newMapPosition,
@@ -61,45 +62,35 @@ const MapView = ({
     }));
   };
 
-
-  useEffect(() =>{
-  
-    if(dataFiltered.center){    
+  useEffect(() => {
+    if (dataFiltered.center) {
       setMapPosition(dataFiltered.center);
     }
-
-  },[dataFiltered.center]);
-
-  useEffect(() =>{
-  
-
-    if(dataFiltered.zoom){
-    
-      setMapZoom(dataFiltered.zoom);
-    }
-  },[dataFiltered.zoom]);
-
-
-
+  }, [dataFiltered.center]);
 
   useEffect(() => {
-    
-    if (mapRef.current) {
-      map.setView(mapPosition, mapZoom)
-     
-      //mapRef.current.setView(mapPosition, mapZoom);
+    if (dataFiltered.zoom) {
+      setMapZoom(dataFiltered.zoom);
+    }
+  }, [dataFiltered.zoom]);
 
+  useEffect(() => {
+    if (mapRef.current) {
+      map.setView(mapPosition, mapZoom);
+
+      //mapRef.current.setView(mapPosition, mapZoom);
 
       const updateVisibleChurches = () => {
         const bounds = map.getBounds();
         const sw = bounds.getSouthWest();
         const ne = bounds.getNorthEast();
-
+  
         const churchList = dataFiltered.data.map((item) => [
           item._id,
           item.name[0],
           [item.locationGPS[0], item.locationGPS[1]],
           item.images[0],
+          item.puntuation,
         ]);
 
         const filteredChurches = churchList.filter((item) => {
@@ -111,7 +102,6 @@ const MapView = ({
         });
         setVisibleChurches(filteredChurches);
       };
-     
 
       map.on("moveend", updateVisibleChurches);
       map.on("zoomend", updateVisibleChurches);
@@ -123,20 +113,45 @@ const MapView = ({
         map.off("zoomend", updateVisibleChurches);
       };
     }
-  }, [mapPosition,mapZoom,mapRef, dataFiltered, setVisibleChurches, map]);   // [mapRef, dataFiltered, setVisibleChurches, map]);
-
-
-  
+  }, [mapPosition, mapZoom, mapRef, dataFiltered, setVisibleChurches, map]); // [mapRef, dataFiltered, setVisibleChurches, map]);
 
   let churchLocation;
   if (dataFiltered && dataFiltered.data.length > 0) {
-    let churchList = dataFiltered.data.map((item) => [
-      item._id,
-      item.name[0],
-      [item.locationGPS[0], item.locationGPS[1]],
-      item.images,
-      item.buildType,
-    ]);
+    let churchList = [];
+
+    for (const item of dataFiltered.data) {
+      let subArray = []
+  
+      if (item.puntuation && item.puntuation.length > 0) {
+     
+        item.puntuation = item.puntuation.map(Number);
+        const average =
+          item.puntuation.reduce((anterior, actual) => anterior + actual, 0)/item.puntuation.length;
+        const roundAverage = parseFloat(average.toFixed(1));
+
+
+          subArray = [
+          item._id,
+          item.name[0],
+          [item.locationGPS[0], item.locationGPS[1]],
+          item.images,
+          item.buildType,
+          roundAverage,
+        ];
+      }else{
+        subArray = [
+          item._id,
+          item.name[0],
+          [item.locationGPS[0], item.locationGPS[1]],
+          item.images,
+          item.buildType,
+          0,
+        ];
+      }
+    
+      churchList.push(subArray);
+    }
+
 
     churchLocation = churchList.map((item) => {
       const id = item[0];
@@ -154,7 +169,16 @@ const MapView = ({
         <Marker
           key={id}
           position={localizacion}
-          icon={buildingType === "Convent / Monestir" ? churchIcon : buildingType === 'Castell' ? castleIcon : churchIcon}
+          icon={
+            buildingType === "Convent / Monestir"
+              ? conventIcon
+              : buildingType === "Castell"
+              ? castleIcon
+              : buildingType === "Esglèsia"
+              ? churchIcon
+              :castleIcon
+              
+          }
           eventHandlers={{
             click: () => markerClick(),
           }}
@@ -166,25 +190,22 @@ const MapView = ({
   }
 
   return (
-    <div className="MapContainer">   
+    <div className="MapContainer">
       <MapContainer
         ref={mapRef}
         className="MapContainer"
         center={mapPosition}
         zoom={mapZoom}
-        onzoomend = {handleMapChange}
-        onmoveend = {handleMapChange}
+        onzoomend={handleMapChange}
+        onmoveend={handleMapChange}
       >
-     
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
         {churchLocation}
-    
       </MapContainer>
-      </div>
-   
+    </div>
   );
 };
 

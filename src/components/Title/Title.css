@@ -2,9 +2,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    /* padding-left: 200px; */
-    /* padding-top: 20px; */
+    padding-left: 200px; 
+    padding-top: 20px; 
     color: aliceblue;
    
 
@@ -13,10 +12,14 @@
   .logoContainer{
     width: 270px;
     height: 200px;
+    margin-right: 50px;
     margin-top: 7px;
   }
   .log{
     width: 100%;
     object-fit: contain;
     object-position: center;
+  }
+  .titleH1{
+    padding-left: 20px;
   }

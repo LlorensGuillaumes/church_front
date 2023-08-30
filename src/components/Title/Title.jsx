@@ -8,7 +8,7 @@ const Title = () => {
       <img className="log" src={logo} alt="logo"/>
     </div>
     
-      <h1>BeepBUILDING</h1>
+      <h1 className="titleH1">BeepBUILDING</h1>
     </div>
   );
 };

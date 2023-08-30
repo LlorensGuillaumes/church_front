@@ -1,7 +1,9 @@
 .App {
   text-align: center;
 }
-
+* {
+  box-shadow: none;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -116,7 +118,7 @@ select{
   justify-content: center; 
   flex-wrap: wrap;
 
-  width: 45%; 
+  width: 50%; 
   height: 80vh;
 }
 .ChurchDetail{
