@@ -95,7 +95,7 @@ function App() {
           position.coords.longitude,
         ]);
         }else {
-          SetActualLocation([41.20721, 1.67429])
+          SetActualLocation([41.20721, 1.67429]);
         }
      
         return [position.coords.latitude, position.coords.longitude];
@@ -109,6 +109,8 @@ function App() {
       })
       .catch((error) => {
         console.error("Error al obtener la posición:", error);
+        SetActualLocation([41.20721, 1.67429]);
+
       });
 
     }
