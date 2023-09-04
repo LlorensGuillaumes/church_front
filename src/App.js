@@ -88,10 +88,16 @@ function App() {
 
       getPosition()
       .then((position) => {
-        SetActualLocation([
+        console.log(position)
+        if (position){
+             SetActualLocation([
           position.coords.latitude,
           position.coords.longitude,
         ]);
+        }else {
+          SetActualLocation([41.20721, 1.67429])
+        }
+     
         return [position.coords.latitude, position.coords.longitude];
       })
       .then((newCenter) => {
