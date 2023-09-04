@@ -1,191 +1,177 @@
-
-
-#preImageContainer{
-    width: 150px;
-    height: 200px;
+#preImageContainer {
+  width: 150px;
+  height: 200px;
 }
 
-#preImage{
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    object-position: center;
+#preImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
 }
 
-.preImageGroup{
-    display: flex;
-    flex-direction: column;
-
+.preImageGroup {
+  display: flex;
+  flex-direction: column;
 }
 
-.form{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
-.page{
-    display: flex;
-    width: 100%;
-    padding: 20px;
+.page {
+  display: flex;
+  width: 100%;
+  padding: 20px;
 }
 
-
-.description{
-    margin-top: 25px;
-    /* margin-bottom: 25px; */
-    padding-right: 17px;
-    height: 100px;
-    overflow: hidden;
-    text-align: justify;
-
+.description {
+  margin-top: 25px;
+  height: 100px;
+  overflow: hidden;
+  text-align: justify;
 }
-.descriptionExtend{
-    margin-top: 25px;
-    padding-right: 17px;
-    text-align: justify;
-
+.descriptionExtend {
+  margin-top: 25px;
+  text-align: justify;
 }
-h2{
-    text-align: center;
+h2 {
+  text-align: center;
 }
-#name{
-    width: 60%;
-    margin-right: 5px;
+#name {
+  width: 60%;
+  margin-right: 5px;
 }
-#poblacio{
-    width: 300px;
+#poblacio {
+  width: 300px;
 }
-.inputName{
-    display: flex;
-    flex-direction: row;
-    margin-top: 10px;
+.inputName {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
 }
-.inputTown{
-    display: flex;
-    flex-direction: row;
-    margin-top: 10px;
+.inputTown {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
 }
-#townLocation{
-    width: 40%;
-    margin-right: 10px;
+#townLocation {
+  width: 40%;
+  margin-right: 10px;
 }
-#province{
-    width: 15%;
+#province {
+  width: 15%;
 }
 
 .inputLocationGPS {
-    display: flex;
-    flex-direction: row;
-    margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
 }
-#latGPS{
-    margin-left: 5px;
-    margin-right: 5px;
+#latGPS {
+  margin-left: 5px;
+  margin-right: 5px;
 }
-.inputArchitectonicStyle{
-    display: flex;
-    flex-direction: row;
-    margin-top: 10px;
-    width: 150px;
-
-}
-
-#architectonicStyle{
-    margin-right: 5px;
+.inputArchitectonicStyle {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+  width: 150px;
 }
 
-#century{
-    margin-left: 15px;
-    margin-right: 5px;
+#architectonicStyle {
+  margin-right: 5px;
 }
 
-.inputDescription{
-    display: flex;
-    flex-direction: column;
+#century {
+  margin-left: 15px;
+  margin-right: 5px;
+}
+
+.inputDescription {
+  display: flex;
+  flex-direction: column;
 }
 .inputDescription {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    overflow-y: auto;
-    margin-top: 10px;
-  }
-  
-  #description {
-    width: 100%;
-    height: 100px;
-    box-sizing: border-box;
-    padding: 8px;
-    resize: vertical;
-    border: 1px solid #ccc;
-    outline: none;
-  }
-  
-.inputWeb{
-display: flex;
-flex-direction: column;
-margin-top: 10px;
-}
-.inputProperty{
-display: flex;
-flex-direction: column;
-margin-top: 10px;
-}
-.inputFile{
-    display: flex;
-    margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow-y: auto;
+  margin-top: 10px;
 }
 
-.btnSend{
-    display: flex;
-    justify-content: space-around;
-    margin-top: 30px;
-
-}
-#btnEnviar{
-        width: 150px;
-        height: 40px;
-    }
-
-.errorMessegeContainer{
-    margin-top: 20px;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-style: solid;
-    border-color: coral;
-
-    }
-.errorMessage{
-    color: coral;
-    font-size: 25px;
-    font-weight: bold;
-    text-align: center;
-
+#description {
+  width: 100%;
+  height: 100px;
+  box-sizing: border-box;
+  padding: 8px;
+  resize: vertical;
+  border: 1px solid #ccc;
+  outline: none;
 }
 
-.namesList{
-    display: flex;
-    flex-direction: column;
-    margin-left: 10px;
-
+.inputWeb {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
 }
-.listAdd{
-    margin-left: 5px;
+.inputProperty {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+.inputFile {
+  display: flex;
+  margin-top: 15px;
 }
 
-.loading{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0,0,0,0.5);
-    z-index: 999;
-    border-radius: 10px;
-    display: none;
+.btnSend {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 30px;
+}
+#btnEnviar {
+  width: 150px;
+  height: 40px;
+}
+
+.errorMessegeContainer {
+  margin-top: 20px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-style: solid;
+  border-color: coral;
+}
+.errorMessage {
+  color: coral;
+  font-size: 25px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.namesList {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+}
+.listAdd {
+  margin-left: 5px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  border-radius: 10px;
+  display: none;
 }

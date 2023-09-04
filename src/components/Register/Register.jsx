@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import api from '../../shared/API/Api'
+import './Register.css'
 
 const Register = ({
     setUser,
@@ -26,13 +27,7 @@ const fnRegister = () =>{
 
         api.post('/users/register',registerData)
             .then((response) => {
-            
-              return response.userDB;
-            })
-            
-            .then((userDB) => {
-           
-              api.post('/userData/new', {userDB})
+              api.post('/userData/new', {userId: response.userDB._id})  
             })
             .then(() => fnLogin())
            
@@ -63,11 +58,21 @@ const fnLogin = () => {
 
   return (
     <div className='registerContainer'>
-    
+      <div className='registerItems'>
         <input onChange={(e) => setRegisterUser(e.target.value)}  placeholder='introdueix mail'/>
+      </div>
+      <div className='registerItems'>
         <input onChange={(e) => setRegisterPasword(e.target.value)} placeholder='introdueix contrasenya'/>
+      </div>
+      <div className='registerItems'>
         <input onChange={(e) => setRegisterConfirmPasword(e.target.value)} placeholder='confirma contrasenya'/>
-        <button onClick={()=>fnRegister()} className='btnNavbar'>Registrar</button>
+      </div>
+      <div className='registerItems'>
+         <button onClick={()=>fnRegister()} className='btnNavbar'>Registrar</button>
+      </div>
+        
+        
+       
         {errorMessage && (
             <p>{errorMessage}</p>
         )}

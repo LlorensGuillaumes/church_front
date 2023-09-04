@@ -29,9 +29,10 @@ const Favourites = ({ dataUser, setDataUser, user }) => {
       .catch((error) => console.log(error));
   };
 
+
   return (
     <div className="favouritesList">
-      {favouritesData
+      {(favouritesData && favouritesData.length > 0)
         ? favouritesData.map((item, index) => (
             <div key={index} className="favouritesItem">
               <div className="dataContainer">
@@ -57,7 +58,7 @@ const Favourites = ({ dataUser, setDataUser, user }) => {
               </div>
             </div>
           ))
-        : null}
+        : <h3 className="noFavourites">Encara no tens favorits</h3>}
     </div>
   );
 };

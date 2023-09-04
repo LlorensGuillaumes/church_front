@@ -7,15 +7,15 @@ const StandOutDetail = ({
   selectedChurch,
   buildingDetails,
   setBuildingDetails,
-  dataSelect
+  dataSelect,
 }) => {
-  //const [myData, setMyData] = useState([]);                                                              
+  //const [myData, setMyData] = useState([]);
   const [newDetailTye, setNewDetailType] = useState("");
   const [newDetailDescription, setNewDetailDesription] = useState("");
   const [newDetailYear, setNewDetailYear] = useState("");
   const [messageError, setMessageError] = useState("");
+  const [descriptionExtend, setDescriptionExtend] = useState(false);
 
-  
   // useEffect(() => {
   //   if (standOutDetailsData && standOutDetailsData.length > 0) {
   //     //setMyData(standOutDetailsData);
@@ -51,28 +51,34 @@ const StandOutDetail = ({
       setMessageError("Tots el camps són obligatoris");
     }
   };
-  
-  
 
   return selectedChurch ? (
     <div className="detailDiv">
-     
-      {standOutDetailsData && standOutDetailsData.length >0 ? standOutDetailsData.map((item, index) => (
-        <div key={index} className="itemsContent">
-        <div className="typeYear">
-           <p>{item.detailType}</p>
-          <p>Any: {item.year}</p>
-        </div>
-        <div className="description">
-          <p >{item.description}</p>
-        </div>
-         
-          
-          
-
-        
-        </div>
-      )):null}
+      {standOutDetailsData && standOutDetailsData.length > 0
+        ? standOutDetailsData.map((item, index) => (
+            <div key={index} className="itemsContent">
+              <div className="typeYear">
+                <p>{item.detailType}</p>
+                <p>Any: {item.year}</p>
+              </div>
+              <div>
+                <p
+                  className={
+                    !descriptionExtend ? "description" : "descriptionExtend"
+                  }
+                >
+                  {item.description}
+                </p>
+                <button
+                  className="showMore"
+                  onClick={() => setDescriptionExtend(!descriptionExtend)}
+                >
+                  {!descriptionExtend ? "veure tot" : "veure menys"}
+                </button>
+              </div>
+            </div>
+          ))
+        : null}
     </div>
   ) : (
     <div className="detailsContent">
@@ -84,7 +90,9 @@ const StandOutDetail = ({
           <select onChange={(e) => setNewDetailType(e.target.value)}>
             <option>tipus de detall</option>
             {dataSelect && dataSelect.length > 0
-              ? dataSelect[0].detailType.map((item) => <option key={item}>{item}</option>)
+              ? dataSelect[0].detailType.map((item) => (
+                  <option key={item}>{item}</option>
+                ))
               : null}
           </select>
 

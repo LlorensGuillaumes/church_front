@@ -11,15 +11,25 @@ import barroc from "../../components/Images/architectonicStyles/barroc.jpg";
 import cistersenc from "../../components/Images/architectonicStyles/cistersenc.jpg";
 import campanar from "../../components/Images/buildinDetail/campanar.jpg";
 import enterrament from "../../components/Images/buildinDetail/enterrament.jpg";
+import estrella from "../../components/Images/estrella.png";
+import estrellaBlanca from "../../components/Images/estrellaBlanca.png";
 
-const Filter = ({ apiData, setDataFiltered, dataFiltered, setFilter, setBtnFilteText }) => {
+const Filter = ({
+  apiData,
+  setDataFiltered,
+  dataFiltered,
+  setFilter,
+  setBtnFilteText,
+  isSmallScreen,
+  setPrincipalView,
+}) => {
   let filterItems = {
     architectonicStyle: [],
     centuryList: [],
     detailTypes: [],
     buildTypes: [],
     center: [],
-    zoom: 10,
+    zoom: 12,
   };
   const dataToFiltered = [...apiData];
 
@@ -29,7 +39,15 @@ const Filter = ({ apiData, setDataFiltered, dataFiltered, setFilter, setBtnFilte
     useState(false);
   const [isCenturyVisible, setIsCenturyVisible] = useState(false);
   const [isDetallesVisible, setIsDetallesVisible] = useState(false);
+  const [isNoteVisible, setIsNoteVisible] = useState(false);
   const [noFiltererItems, setNoFilterItems] = useState(false);
+  const [imagesStates, setImageStates] = useState([
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
 
   const romanToArabic = (roman) => {
     switch (roman) {
@@ -245,6 +263,10 @@ const Filter = ({ apiData, setDataFiltered, dataFiltered, setFilter, setBtnFilte
         arrDataFiltered.push(building);
       }
     }
+    const minValoration = (imagesStates.filter((item)=> item === true).length)
+    console.log(arrDataFiltered.filter((item) => (
+      item.puntuation.reduce((suma, actual) => suma + actual )/item.puntuation.length) >= minValoration)
+    )
 
     if (arrDataFiltered.length > 0) {
       setDataFiltered((prevDataFiltered) => ({
@@ -260,21 +282,28 @@ const Filter = ({ apiData, setDataFiltered, dataFiltered, setFilter, setBtnFilte
 
   const [architectonicStylesStates, setArchitectonicStylesStates] = useState(
     filterItems.architectonicStyle.map((item) => [false, item])
-    //Array(filterItems.architectonicStyle.length).fill(true)
   );
   const [BuildingTypesStates, SetBuildinTypeslesStates] = useState(
     filterItems.buildTypes.map((item) => [false, item])
-    //Array(filterItems.buildTypes.length).fill(true)
   );
 
   const [centuriesStates, setCenturiesStylesStates] = useState(
     filterItems.centuryList.map((item) => [false, item])
-    //Array(filterItems.centuryList.length).fill(true)
   );
   const [detailTypesStates, setDetailTypesStates] = useState(
     filterItems.detailTypes.map((item) => [false, item])
-    //Array(filterItems.detailTypes.length).fill(true)
   );
+
+  const toggleImage = (index) => {
+    const initialStates = Array(imagesStates.length).fill(false);
+    const updatedStates = initialStates.map((state, i) => {
+      if (i <= index) {
+        return true;
+      }
+      return state;
+    });
+    setImageStates(updatedStates);
+  };
 
   return (
     <div className="bigFilterContainer">
@@ -299,9 +328,12 @@ const Filter = ({ apiData, setDataFiltered, dataFiltered, setFilter, setBtnFilte
                 setDataFiltered((prevDataFiltered) => ({
                   ...prevDataFiltered,
                   data: dataToFiltered,
-                }))
-                setFilter('listView');
-                setBtnFilteText('FILTRAR')
+                }));
+                isSmallScreen
+                  ? setPrincipalView("mapView")
+                  : setFilter("listView");
+
+                setBtnFilteText("FILTRAR");
               }}
             >
               mostrar tots
@@ -467,6 +499,33 @@ const Filter = ({ apiData, setDataFiltered, dataFiltered, setFilter, setBtnFilte
               )}
             </div>
           )}
+          <div className="columnItems">
+            <div
+              className="titleBtn"
+              onClick={() => {
+                setIsNoteVisible(!isNoteVisible);
+              }}
+            >
+              <h3>Puntuació</h3>
+            </div>
+            {isNoteVisible && (
+              <div className="markPuntuation">
+                {imagesStates.map((isEstrellaVisible, index) => (
+                  <div
+                    key={index}
+                    className="AddPuntuationContainer"
+                    onClick={() => toggleImage(index)}
+                  >
+                    <img
+                      src={isEstrellaVisible ? estrella : estrellaBlanca}
+                      alt="estrella"
+                      className="addPuntuationItem"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

@@ -17,7 +17,7 @@ const initialPage = ({ setViewInitialPage, viewIntitialPage }) => {
 
           <p className="initialPageDescription">
             BeepBuilding és un lloc on trobar les grans, i no tant grans,
-            construccións arquitectòniques d'una zona
+            construccions arquitectòniques d'arreu del territori.
           </p>
         </div>
       </div>
@@ -26,7 +26,7 @@ const initialPage = ({ setViewInitialPage, viewIntitialPage }) => {
         <button 
         className="btnInit"
         onClick={() => setViewInitialPage(!viewIntitialPage)}>
-          Comencem
+          Comencem?
         </button>
       </div>
       <CarouselInit carouselData={images} dataType="exist" imagesFront={true} />

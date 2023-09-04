@@ -1,129 +1,107 @@
 .App {
   text-align: center;
 }
-* {
-  box-shadow: none;
-}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
 
-*{
+* {
   margin: 0px;
   padding: 0px;
   background-color: rgb(190, 158, 110);
-
-
-  
+  box-shadow: none;
+  border-radius: 2rem;
+ 
 }
-button{
+.principalView{
+  width: 60%;
+
+}
+button {
   background-color: cornsilk;
   text-align: center;
   font-size: 25px;
   font-weight: bolder;
   padding: 7px;
-
-
 }
 
-input::placeholder{
- color: white;
-}
-text::placeholder{
+input::placeholder {
   color: white;
 }
-textarea::placeholder{
+text::placeholder {
   color: white;
 }
-textarea{
+textarea::placeholder {
   color: white;
 }
-input{
+textarea {
+  color: black;
+}
+input {
+  color: white;
+  min-height: 30px;
+  padding-left: 15px;
+}
+h1 {
   color: white;
 }
-h1{
+h2 {
   color: white;
 }
-h2{
-  color: white;
+p {
+  color: black;
 }
-p{
-  color: white;
-}
-a{
+a {
   color: aqua;
 }
 
-label{
+label {
   color: white;
 }
-select{
+select {
   color: white;
-}
-/* @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.initStyles {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-} */
-.initStyles{
-  display: flex;
-  flex-direction: column;
-  
-  /* background-color: red; */
-}
-
-.mapAndDetail{
+.mapAndDetail {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start; 
+  justify-content: flex-start;
 }
 .mapView {
   display: flex;
-  width: 60%;
+  width: 100%;
   height: 80vh;
-  margin-left: 20px;
-  margin-right: 20px;
-  
+
 }
 
 .detailView {
   display: flex;
-  justify-content: center; 
+  justify-content: center;
   flex-wrap: wrap;
 
-  width: 50%; 
+  width: 50%;
   height: 80vh;
 }
-.ChurchDetail{
+.ChurchDetail {
   display: flex;
   width: 40%;
   height: 80%;
-  
+}
+
+@media (max-width: 700px) {
+  .hiden {
+    display: none;
+  }
+  .principalView{
+    width: 100%;
+  }
 }

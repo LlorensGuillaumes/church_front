@@ -6,6 +6,7 @@
   height: 80vh;
   overflow: auto;
   width: 100%;
+  padding: 15px;
 }
 .info {
   width: 100%;
@@ -95,4 +96,11 @@ a {
     border: none;
     cursor: pointer;
     margin-top: 3px;
+    z-index: 20;
+}
+
+.btnShowDetails{
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
 }

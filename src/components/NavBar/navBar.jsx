@@ -1,12 +1,19 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
+import { connectUser } from "../../redux/users/conectors";
+import { login } from "../../redux/users/usersActions";
+import { logout } from "../../redux/users/usersActions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faSignInAlt } from "@fortawesome/free-solid-svg-icons";
 import api from "../../shared/API/Api";
 import "./navBar.css";
 import lupa from "../../components/Images/lupa.png";
 
+
+
 const NavBar = ({
   setFilter,
+  filter,
   setPrincipalView,
   principalView,
   setSelectedChurch,
@@ -19,25 +26,22 @@ const NavBar = ({
   btnFilterText,
   setBtnFilteText,
   setDataUser,
+  isSmallScreen,
   dataUser,
+  loginUser,
+  logoutUser, 
+  actualLocation,
+  SetActualLocation,
 }) => {
   const [inputUser, SetInputUser] = useState("");
   const [inputPasword, SetInputPasword] = useState("");
   const [selectedValue, setSelectedValue] = useState("admin");
   const [listTownVisible, setListTownVisible] = useState(false);
   const [errorAutenticate, setErrorAutenticate] = useState([false, ""]);
+  const [loginVisible, setLoginVisible] = useState(false);
+  const [btnLoginVisible, setBtnLoginVisible] = useState(true);
 
   const dataToFiltered = [...apiData];
-
-  const fnOpcionesFiltro = () => {
-    if (btnFilterText === "FILTRAR") {
-      setFilter("filter");
-      setBtnFilteText("VEURE LLISTAT");
-    } else if (btnFilterText === "VEURE LLISTAT") {
-      setFilter("listView");
-      setBtnFilteText("FILTRAR");
-    }
-  };
 
   if (!user) {
     if (localStorage.tokken) {
@@ -58,7 +62,9 @@ const NavBar = ({
   };
 
   const fnLogin = () => {
-    if (!user) {
+
+
+    if (!user.mail) {
       const loginData = {
         mail: inputUser,
         password: inputPasword,
@@ -68,14 +74,13 @@ const NavBar = ({
         .post("/users/login", loginData)
         .then(async (response) => {
           if (response.userDB) {
-            localStorage.setItem("token", response.token);
-            setUser(response.userDB);
-            console.log(response.userDB)
-        
+            localStorage.setItem("token", response.token);           
+            loginUser(response.userDB);
+            setBtnLoginVisible(false);
+
             api
               .get(`/userData/userId/${response.userDB._id}`)
               .then((response) => {
-                console.log(response[0]);
                 setDataUser(response[0]);
               });
           } else {
@@ -93,12 +98,10 @@ const NavBar = ({
           setErrorAutenticate(true);
           console.log("Error en la llamada a la API:", error);
         });
-    } else {
-      setUser(null);
-      localStorage.removeItem("token");
-      setErrorAutenticate(false, "");
-    }
+    } 
   };
+
+
 
   const handleSelectedChange = (selectedValue) => {
     if (selectedValue === "newBuilding") {
@@ -108,11 +111,6 @@ const NavBar = ({
     } else if (selectedValue === "list") {
     } else {
     }
-  };
-
-  const fnViewMap = () => {
-    setPrincipalView("mapView");
-    setFilter("listView");
   };
 
   const [town, setTown] = useState([]);
@@ -146,9 +144,10 @@ const NavBar = ({
     setDataFiltered((prevDataFiltered) => ({
       ...prevDataFiltered,
       center: item.ubication,
-      zoom: 10,
+      zoom: 12,
       data: dataToFiltered,
     }));
+    SetActualLocation(item.ubication)
     setListTownVisible(false);
     arrTownData.length = 0;
   };
@@ -159,29 +158,65 @@ const NavBar = ({
   };
 
   const fnRegister = () => {
-    setRegister(true);
-    setFilter("register");
+    setRegister(false);
+    if (isSmallScreen) {
+      principalView !== "register"
+        ? setPrincipalView("register")
+        : setPrincipalView("listView");
+    } else {
+      filter !== "register" ? setFilter("register") : setFilter("listView");
+    }
   };
+
+
   return (
     <div className="navBar">
-      <div className="rightButtons">
-        {user ? (
-          <div className="dataLogin" onClick={() => setFilter("userSettings")}>
-            <p className="btnNavbar"> {user.mail} </p>
-            <FontAwesomeIcon
-              icon={faUser}
-              className="loginIconLoggedIn"
-              title="tancar sessió"
-              onClick={() => {
-                setUser();
-                setPrincipalView('mapView');
-                setFilter('listView')
-              }}
-            />
-          </div>
-        ) : !user && !errorAutenticate[0] ? (
-          <div className="dataLogin">
-            <div>
+      {btnLoginVisible && (
+        <div className="rightButtons">
+          <button
+            onClick={() => setLoginVisible(!loginVisible)}
+            className="btnNavbar btnLogin"
+          >
+            Inicia sessió
+          </button>
+
+          <button onClick={() => fnRegister()} className="btnNavbar btnLogin">
+            Registra't
+          </button>
+        </div>
+      )}
+
+      {loginVisible && (
+        <div className="rightButtons">
+          {user.mail ? (
+            <div className="dataLogin">
+              <p
+                className="btnNavbar"
+                onClick={() => {
+                  isSmallScreen
+                    ? setPrincipalView("userSettings")
+                    : setFilter("userSettings");
+                }}
+              >
+                {" "}
+                {user.mail}{" "}
+              </p>
+              <FontAwesomeIcon
+                icon={faUser}
+                className="loginIconLoggedIn"
+                title="tancar sessió"
+                onClick={() => {
+                  loginUser(logout());
+                  setUser();
+                  setPrincipalView("mapView");
+                  setFilter("listView");
+                  setLoginVisible(false);
+                  setBtnLoginVisible(true);
+                }}
+              />
+            </div>
+          ) : !user.mail && !errorAutenticate[0] ? (
+            <div className="dataLogin">
               <input
                 type="text"
                 placeholder="admin@admin.com"
@@ -194,61 +229,63 @@ const NavBar = ({
                 className="logInput"
                 onChange={(e) => SetInputPasword(e.target.value)}
               />
-            </div>
-            {!register ? (
-              <FontAwesomeIcon
-                icon={faSignInAlt}
-                className="loginIconLoggedOut"
-                title="Inciar sessió"
-                onClick={fnLogin}
-              />
-            ) : (
-              <button>registrar-se</button>
-            )}
-          </div>
-        ) : errorAutenticate[0] ? (
-          <div>
-            <p className="errorMesageLogIn">
-              {(() => {
-                switch (errorAutenticate[1]) {
-                  case "usuari no trobat":
-                    return "Usuari no trobat";
-                  case "contraseña errònia":
-                    return "Contrasenya errònia";
-                  default:
-                    return "error de logIn";
-                }
-              })()}
-            </p>
 
-            {errorAutenticate[1] === "usuari no trobat" && (
-              <div className="dataLogin">
-                <button className="btnNavbar" onClick={() => fnReintentar()}>
-                  Reintentar
-                </button>
-                <button className="btnNavbar" onClick={() => fnRegister()}>
-                  Registrar
-                </button>
-              </div>
-            )}
-            {errorAutenticate[1] === "contrasenya errònia" && (
-              <div className="dataLogin">
-                <button className="btnNavbar" onClick={() => fnReintentar()}>
-                  Reintentar
-                </button>
-              </div>
-            )}
-            {errorAutenticate[1] !== "usuari no trobat" &&
-              errorAutenticate[1] !== "contrasenya errònia" && (
+              {!register ? (
+                <FontAwesomeIcon
+                  icon={faSignInAlt}
+                  className="loginIconLoggedOut"
+                  title="Inciar sessió"
+                  onClick={fnLogin}
+                />
+              ) : null}
+            </div>
+          ) : errorAutenticate[0] ? (
+            <div>
+              <p className="errorMesageLogIn">
+                {(() => {
+                  switch (errorAutenticate[1]) {
+                    case "usuari no trobat":
+                      return "Usuari no trobat";
+                    case "contraseña errònia":
+                      return "Contrasenya errònia";
+                    default:
+                      return "error de logIn";
+                  }
+                })()}
+              </p>
+
+              {errorAutenticate[1] === "usuari no trobat" && (
+                <div className="dataLogin">
+                  <button className="btnNavbar" onClick={() => fnReintentar()}>
+                    Reintentar
+                  </button>
+                  <button className="btnNavbar" onClick={() => fnRegister()}>
+                    Registrar
+                  </button>
+                </div>
+              )}
+              {errorAutenticate[1] === "contrasenya errònia" && (
                 <div className="dataLogin">
                   <button className="btnNavbar" onClick={() => fnReintentar()}>
                     Reintentar
                   </button>
                 </div>
               )}
-          </div>
-        ) : null}
-      </div>
+              {errorAutenticate[1] !== "usuari no trobat" &&
+                errorAutenticate[1] !== "contrasenya errònia" && (
+                  <div className="dataLogin">
+                    <button
+                      className="btnNavbar"
+                      onClick={() => fnReintentar()}
+                    >
+                      Reintentar
+                    </button>
+                  </div>
+                )}
+            </div>
+          ) : null}
+        </div>
+      )}
       <div>
         <div className="findByTown">
           <input
@@ -267,47 +304,70 @@ const NavBar = ({
             <img src={lupa} alt="lupa" />
           </button>
 
-          {listTownVisible && arrTownData && arrTownData.length > 0 ? (
-            <div className="townList">
-              {arrTownData.map((item, index) =>
-                item.ubication.length > 0 ? (
-                  <div
-                    key={index}
-                    className="townDataItems"
-                    onClick={() => {
-                      fnTownClick(item);
-                    }}
-                  >
-                    <div className="townDataNames">
-                      <p>
-                        {item.name}, {item.zona}
-                      </p>
+          <div>
+            {listTownVisible && arrTownData && arrTownData.length > 0 ? (
+              <div className="townList">
+                {arrTownData.map((item, index) =>
+                  item.ubication.length > 0 ? (
+                    <div
+                      key={index}
+                      className="townDataItems"
+                      onClick={() => {
+                        fnTownClick(item);
+                      }}
+                    >
+                      <div className="townDataNames">
+                        <p>
+                          {item.name}, {item.zona}
+                        </p>
+                      </div>
+                      <p>{item.country}</p>
                     </div>
-                    <p>{item.country}</p>
-                  </div>
-                ) : null
-              )}
-            </div>
-          ) : null}
+                  ) : null
+                )}
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
 
       <div className="navBarButtons">
         <div className="leftButtons">
-          {principalView === "mapView" ? (
-            <button onClick={fnOpcionesFiltro} className="btnNavbar">
-              {btnFilterText}
-            </button>
-          ) : null}
-
           <button
             className="btnNavbar"
             onClick={() => {
-              fnViewMap();
+              isSmallScreen
+                ? setPrincipalView("mapView")
+                : setPrincipalView("mapView");
+              !isSmallScreen && setFilter("listView");
             }}
           >
             MAPA
           </button>
+          <button
+            onClick={() => {
+              isSmallScreen
+                ? setPrincipalView("listView")
+                : setPrincipalView("mapView");
+              !isSmallScreen && setFilter("listView");
+            }}
+            className="btnNavbar"
+          >
+            LLISTAT
+          </button>
+
+          <button
+            onClick={() => {
+              isSmallScreen
+                ? setPrincipalView("filter")
+                : setPrincipalView("mapView");
+              !isSmallScreen && setFilter("filter");
+            }}
+            className="btnNavbar"
+          >
+            FILTRAR
+          </button>
+
           {user && (user.rol === "AD" || user.rol === "SA") && (
             <select
               className="droboxNavbar"
@@ -331,4 +391,5 @@ const NavBar = ({
   );
 };
 
-export default NavBar;
+export default connectUser(NavBar);
+

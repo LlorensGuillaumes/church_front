@@ -41,12 +41,17 @@ const MapView = ({
   setVisibleChurches,
   setPrincipalView,
   setDataFiltered,
+  actualLocation,
+  setActualLocation,
 }) => {
-  const [mapPosition, setMapPosition] = useState([41.22274, 1.72389]);
+
+  const [mapPosition, setMapPosition] = useState(actualLocation);
   const [mapZoom, setMapZoom] = useState(10);
 
   const mapRef = useRef(null);
   const map = mapRef.current;
+
+
 
   const handleMapChange = () => {
     const newMapPosition = [map.getCenter().lat, map.getCenter().lng];
@@ -54,7 +59,7 @@ const MapView = ({
 
     setMapPosition(newMapPosition);
     setMapZoom(newMapZoom);
-
+    setActualLocation(newMapPosition);
     setDataFiltered((prevDataFiltered) => ({
       ...prevDataFiltered,
       center: newMapPosition,
@@ -75,7 +80,8 @@ const MapView = ({
   }, [dataFiltered.zoom]);
 
   useEffect(() => {
-    if (mapRef.current) {
+    if (mapRef.current && mapPosition && map) {
+
       map.setView(mapPosition, mapZoom);
 
       //mapRef.current.setView(mapPosition, mapZoom);
@@ -84,6 +90,7 @@ const MapView = ({
         const bounds = map.getBounds();
         const sw = bounds.getSouthWest();
         const ne = bounds.getNorthEast();
+       
   
         const churchList = dataFiltered.data.map((item) => [
           item._id,

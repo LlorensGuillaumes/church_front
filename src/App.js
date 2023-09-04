@@ -21,14 +21,16 @@ function App() {
   const [apiData, setApiData] = useState([]);
   const [dataFiltered, setDataFiltered] = useState({
     data: [],
-    center: ["41.22274", "1.72389"],
-    zoom: 10
+    center: [],
+    zoom: 12,
   });
+
+  // center: ["41.22274", "1.72389"],
   const [filter, setFilter] = useState("listView");
   const [principalView, setPrincipalView] = useState("mapView");
   const [dataType, setDataType] = useState("");
   const [user, setUser] = useState(null);
-  const [dataUser, setDataUser]=useState(null);
+  const [dataUser, setDataUser] = useState(null);
   const [visibleChurches, setVisibleChurches] = useState([]);
   const [buildingDetails, setBuildingDetails] = useState([]);
   const [dataSelect, setDataSelect] = useState({});
@@ -36,6 +38,8 @@ function App() {
   const [viewIntitialPage, setViewInitialPage] = useState(true);
   const [register, setRegister] = useState(false);
   const [btnFilterText, setBtnFilteText] = useState("FILTRAR");
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [actualLocation, SetActualLocation] = useState([]);
 
   const fetchData = () => {
     api
@@ -44,32 +48,78 @@ function App() {
         setApiData(response);
         setDataFiltered((prevDataFiltered) => ({
           ...prevDataFiltered,
-          data: response
+          data: response,
         }));
       })
       .catch((error) => {
         console.log(error);
       });
+
+    const screenWidth = window.innerWidth;
+    if (screenWidth <= 700) {
+      setIsSmallScreen(true);
+      setPrincipalView("listView");
+    }
   };
-
-
 
   useEffect(() => {
     fetchData();
+    const getPosition = () => {
+      return new Promise((resolve, reject) => {
+        if ("geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              resolve(position);
+            },
+            (error) => {
+              reject(error);
+            }
+          );
+        } else {
+          reject(
+            new Error(
+              "La geolocalización no está disponible en este navegador."
+            )
+          );
+        }
+      });
+    };
+
+    getPosition()
+      .then((position) => {
+        SetActualLocation([
+          position.coords.latitude,
+          position.coords.longitude,
+        ]);
+        return [position.coords.latitude, position.coords.longitude];
+      })
+      .then((newCenter) => {
+        setDataFiltered((prevDataFiltered) => ({
+          ...prevDataFiltered,
+          center: newCenter,
+        }));
+       
+      })
+      .catch((error) => {
+        console.error("Error al obtener la posición:", error);
+      });
   }, []);
 
   if (viewIntitialPage) {
-    return <InitialPage 
-          setViewInitialPage = {setViewInitialPage}
-          viewIntitialPage = {viewIntitialPage} />;
+    return (
+      <InitialPage
+        setViewInitialPage={setViewInitialPage}
+        viewIntitialPage={viewIntitialPage}
+      />
+    );
   }
 
   return (
     <div className="initStyles">
-    <Title/>
+      <Title />
       <NavBar
         setFilter={setFilter}
-        filter = {filter}
+        filter={filter}
         setPrincipalView={setPrincipalView}
         principalView={principalView}
         setSelectedChurch={setSelectedChurch}
@@ -77,81 +127,136 @@ function App() {
         setUser={setUser}
         setDataFiltered={setDataFiltered}
         apiData={apiData}
-        register = {register}
-        setRegister = {setRegister}
+        register={register}
+        setRegister={setRegister}
         btnFilterText={btnFilterText}
         setBtnFilteText={setBtnFilteText}
-        setDataUser = {setDataUser}
+        setDataUser={setDataUser}
         dataUser={dataUser}
+        isSmallScreen={isSmallScreen}
+        SetActualLocation={SetActualLocation}
+        actualLocation={actualLocation}
       />
 
       <div className="mapAndDetail">
-        <div className="mapView">
-          {principalView === "mapView" && (
-            <MapView
-              className="mapView"
-              setSelectedChurch={setSelectedChurch}
-              dataFiltered={dataFiltered}
-              setFilter={setFilter}
-              setVisibleChurches={setVisibleChurches}
-              setPrincipalView={setPrincipalView}
-              setDataFiltered={setDataFiltered}
-            />
-          )}
-          {principalView === "newChurch" && (
-            <NewChurch
-              setPrincipalView={setPrincipalView}
-              setFilter={setFilter}
-              buildingDetails={buildingDetails}
-              dataSelect={dataSelect}
-              setDataSelect={setDataSelect}
-              fetchData={fetchData}
-            />
-          )}
-          {principalView === "detail" && (
-            <ChurchDetail
-              selectedChurch={selectedChurch}
-              setDataType={setDataType}
-              dataType={dataType}
-              setStandOutDetailsData={setStandOutDetailsData}
-              setPrincipalView={setPrincipalView}
-              setBuildingToModify={setBuildingToModify}
-              user={user}
-              dataUser = {dataUser}
-              setDataUser={setDataUser}
-            />
-          )}
-          {principalView === "buildingModify" && (
-            <ModifyBuilding
-              buildingToModify={buildingToModify}
-              setPrincipalView={setPrincipalView}
-            />
-          )}
-          {principalView === "favourites" && (
-            <Favourites
-              dataUser = {dataUser}
-              setDataUser = {setDataUser}
-              user={user}
-            />
-          
-          )}
+        <div className="principalView">
+          <div className="mapView">
+            {principalView === "mapView" && (
+              <MapView
+                className="mapView"
+                setSelectedChurch={setSelectedChurch}
+                dataFiltered={dataFiltered}
+                setFilter={setFilter}
+                setVisibleChurches={setVisibleChurches}
+                setPrincipalView={setPrincipalView}
+                setDataFiltered={setDataFiltered}
+                actualLocation={actualLocation}
+                setActualLocation={SetActualLocation}
+              />
+            )}
+            {principalView === "newChurch" && (
+              <NewChurch
+                setPrincipalView={setPrincipalView}
+                setFilter={setFilter}
+                buildingDetails={buildingDetails}
+                dataSelect={dataSelect}
+                setDataSelect={setDataSelect}
+                fetchData={fetchData}
+              />
+            )}
+            {principalView === "detail" && (
+              <ChurchDetail
+                selectedChurch={selectedChurch}
+                setDataType={setDataType}
+                dataType={dataType}
+                setStandOutDetailsData={setStandOutDetailsData}
+                setPrincipalView={setPrincipalView}
+                setBuildingToModify={setBuildingToModify}
+                user={user}
+                dataUser={dataUser}
+                setDataUser={setDataUser}
+                isSmallScreen={isSmallScreen}
+              />
+            )}
+            {principalView === "buildingModify" && (
+              <ModifyBuilding
+                buildingToModify={buildingToModify}
+                setPrincipalView={setPrincipalView}
+              />
+            )}
+            {principalView === "favourites" && (
+              <Favourites
+                dataUser={dataUser}
+                setDataUser={setDataUser}
+                user={user}
+              />
+            )}
+            {principalView === "userSettings" && (
+              <UserSettings
+                setFilter={setFilter}
+                setPrincipalView={setPrincipalView}
+                user={user}
+              />
+            )}
+            {principalView === "filter" && (
+              <Filter
+                apiData={apiData}
+                setDataFiltered={setDataFiltered}
+                dataFiltered={dataFiltered}
+                setFilter={setFilter}
+                setBtnFilteText={setBtnFilteText}
+                isSmallScreen={isSmallScreen}
+                setPrincipalView={setPrincipalView}
+              />
+            )}
+
+            {principalView === "listView" && (
+              <VisibleChurch
+                visibleChurches={visibleChurches}
+                setVisibleChurches={setVisibleChurches}
+                setSelectedChurch={setSelectedChurch}
+                setPrincipalView={setPrincipalView}
+                setFilter={setFilter}
+                apiData={apiData}
+                actualLocation={actualLocation}
+              />
+            )}
+            {principalView === "StandOut" && (
+              <StandOutDetail
+                standOutDetailsData={standOutDetailsData}
+                selectedChurch={selectedChurch}
+                buildingDetails={buildingDetails}
+                setBuildingDetails={setBuildingDetails}
+                dataSelect={dataSelect}
+              />
+            )}
+            {principalView === "register" && (
+              <Register setUser={setUser} setFilter={setFilter} />
+            )}
+          </div>
         </div>
-        <div className="detailView">
+
+        <div className="detailView hiden">
           {filter === "filter" && (
             <Filter
               apiData={apiData}
               setDataFiltered={setDataFiltered}
               dataFiltered={dataFiltered}
-              setFilter = {setFilter}
-              setBtnFilteText = {setBtnFilteText}
+              setFilter={setFilter}
+              setBtnFilteText={setBtnFilteText}
+              isSmallScreen={isSmallScreen}
+              setPrincipalView={setPrincipalView}
             />
           )}
           {filter === "listView" && (
             <VisibleChurch
               visibleChurches={visibleChurches}
+              setVisibleChurches={setVisibleChurches}
               setSelectedChurch={setSelectedChurch}
               setPrincipalView={setPrincipalView}
               setFilter={setFilter}
+              apiData={apiData}
+              actualLocation={actualLocation}
             />
           )}
           {filter === "StandOut" && (
@@ -164,18 +269,15 @@ function App() {
             />
           )}
           {filter === "register" && (
-            <Register
-              setUser = {setUser}
-              setFilter = {setFilter}
-            />
+            <Register setUser={setUser} setFilter={setFilter} />
           )}
           {filter === "userSettings" && (
             <UserSettings
-              setFilter = {setFilter}
-              setPrincipalView = {setPrincipalView}
+              setFilter={setFilter}
+              setPrincipalView={setPrincipalView}
+              user={user}
             />
           )}
-
         </div>
       </div>
     </div>
@@ -183,4 +285,3 @@ function App() {
 }
 
 export default App;
-
