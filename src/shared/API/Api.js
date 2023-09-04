@@ -1,5 +1,5 @@
 //const BASE_URL = "http://localhost:5000";
-const BASE_URL = 'https://buildingback.onrender.com/'
+const BASE_URL = 'https://buildingback.onrender.com'
 
 const token = localStorage.getItem('token');
 
