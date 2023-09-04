@@ -65,7 +65,7 @@ const VisibleChurch = ({
             <div className="imgContainer">
               <img
                 className="imgItem"
-                src={`http://localhost:5000/churches/getImages/${item[3]}`}
+                src={`https://buildingback.onrender.com/getImages/${item[3]}`}
                 alt={`${index}`}
               />
               {item[4] && Array.isArray(item[4]) && item[4].length > 0 && (
