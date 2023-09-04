@@ -64,28 +64,29 @@ function App() {
 
   useEffect(() => {
     fetchData();
-    const getPosition = () => {
-      return new Promise((resolve, reject) => {
-        if ("geolocation" in navigator) {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              resolve(position);
-            },
-            (error) => {
-              reject(error);
-            }
-          );
-        } else {
-          reject(
-            new Error(
-              "La geolocalización no está disponible en este navegador."
-            )
-          );
-        }
-      });
-    };
+    if(navigator.geolocation){
+      const getPosition = () => {
+        return new Promise((resolve, reject) => {
+          if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                resolve(position);
+              },
+              (error) => {
+                reject(error);
+              }
+            );
+          } else {
+            reject(
+              new Error(
+                "La geolocalización no está disponible en este navegador."
+              )
+            );
+          }
+        });
+      };
 
-    getPosition()
+      getPosition()
       .then((position) => {
         SetActualLocation([
           position.coords.latitude,
@@ -103,6 +104,11 @@ function App() {
       .catch((error) => {
         console.error("Error al obtener la posición:", error);
       });
+
+    }
+ 
+
+
   }, []);
 
   if (viewIntitialPage) {
