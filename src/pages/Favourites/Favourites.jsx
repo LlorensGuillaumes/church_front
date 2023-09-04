@@ -52,7 +52,7 @@ const Favourites = ({ dataUser, setDataUser, user }) => {
               <div className="favouritesImgContainer">
                 <img
                   className="favouritesImg"
-                  src={`https://buildingback.onrender.com/getImages/${item.images[0]}`}
+                  src={`https://buildingback.onrender.com/churches/getImages/${item.images[0]}`}
                   alt={item.id}
                 />
               </div>

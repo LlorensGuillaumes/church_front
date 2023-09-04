@@ -118,7 +118,7 @@ const handleBuildTypeChange = (selectedValue) =>{
         {images.map((item, index)=>(
             <img
             key={index}
-              src={`https://buildingback.onrender.com/getImages/${item}`}
+              src={`https://buildingback.onrender.com/churches/getImages/${item}`}
               alt={`${index}`}
             />
         ))}

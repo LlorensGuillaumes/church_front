@@ -21,7 +21,7 @@ const CarouselInit = ({ carouselData, dataType, imagesFront = false }) => {
         carouselData.map((src) => ({
           headerText: null,
           subText: null,
-          image: `https://buildingback.onrender.com/getImages/${src}`,
+          image: `https://buildingback.onrender.com/churches/getImages/${src}`,
         }))
       );
     } else {
