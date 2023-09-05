@@ -162,7 +162,7 @@ const ChurchDetail = ({
       api.put(`/userData/edit/${dataUser._id}/`, dataUser).then(() => {});
     }
   };
-console.log(user)
+
   return (
     <div className="detailDiv">
       {user && (user.rol === "AD" || user.rol === "SA") ? (
