@@ -1,73 +1,93 @@
-.listContainer{
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 80vh;
-    overflow: auto;
-    border-top: solid 2px white;
-
+.listContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 80vh;
+  overflow: auto;
+  border-top: solid 2px white;
 }
-.listItem{
+.listItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-bottom: solid 2px white;
+  width: 98%;
+  margin-bottom: 5px;
+}
+.imgContainer {
+  display: flex;
+  width: 30%;
+  height: 84px;
+  justify-content: flex-end;
+}
+.imgItem {
+  width: 100%;
+  object-fit: contain;
+}
+.image_puntuation {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 98%;
+  padding: 5px;
+}
+.puntuation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* margin-left: 10px;
+  margin-right: 10px; */
+  width: 15%;
+}
+.estrella {
+  width: 55px;
+  height: 55px;
+}
+.picture {
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.number {
+  display: flex;
+  text-align: center;
+  width: 100%;
+}
+.churchName {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.churchNameP {
+  text-align: center;
+}
+.numVal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  margin-left: 5px;
+  width: 20%;
+}
+
+@media (max-width: 700px) {
+  .listItem {
     display: flex;
     flex-direction: column;
     align-items: center;
     border-bottom: solid 2px white;
-    width: 100%;
-    
+    width: 97%;
     margin-bottom: 5px;
-}
-.imgContainer {
-    display: flex;
-    width: 40%;
-    height: 84px;
-    justify-content: flex-end;
-}
-.imgItem {
-    width: 100%;
-    object-fit: contain;
+  }
 
-  
-}
-.image_puntuation{
+  .image_puntuation {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    width: 100%;
-    padding: 5px;
-}
-.puntuation{
-    display: flex;
-    align-items: center;
-    margin-left: 10px;
-    margin-right: 10px;
-}
-.estrella{
-    width: 50px;
-    height: 50px;
-
-}
-.picture{
-    width: 100%;
-    object-fit: cover;
-    object-position: center;
-}
-.number{
-    display: flex;
-}
-.churchName{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-}
-.churchNameP{
-    text-align: center;
-}
-.numVal{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: white;
-    margin-left: 5px;
+    width: 98%;
+    padding: 0px;
+  }
 }

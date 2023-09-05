@@ -28,7 +28,7 @@
 
 .rightButtons {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: flex-end;
 }
 .leftButtons {
@@ -38,10 +38,12 @@
 }
 .logInput {
   margin-right: 5px;
+  margin-right: 5px;
   padding-left: 15px;
 }
 
 .loginIconLoggedIn {
+  display: flex;
   color: greenyellow;
   font-size: 25px;
   margin-right: 15px;
@@ -50,6 +52,7 @@
 }
 
 .loginIconLoggedOut {
+  display: flex;
   color: rgb(114, 187, 114);
   font-size: 25px;
   margin-right: 15px;
@@ -76,18 +79,18 @@
 }
 .inputFindTown {
   height: 20px;
+  width: 50%;
 }
 
 .btnFindTown {
   display: flex;
   align-items: flex-start;
-  width: 40px;
-  height: 40px;
+  width: 75px;
+  height: 60px;
   background-color: transparent;
   color: aliceblue;
   border-style: none;
   font-weight: bold;
-  
 }
 .btnFindTown img {
   width: 100%;
@@ -104,16 +107,72 @@
 .errorMesageLogIn {
   padding-left: 27px;
 }
-.btnLogin{
+.btnLogin {
   display: flex;
-  margin-right: 15px;
+  margin-right: 5px;
   font-size: 25px;
-
+  width: 200px;
+  justify-content: center;
+}
+.loginName {
+  text-align: end;
+  background-color: transparent;
+  color: aliceblue;
+  margin-left: 20px;
+  border-style: none;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 @media (max-width: 700px) {
-  .hide{
+  .hide {
     display: none;
   }
+  .btnLogin {
+    display: flex;
+    justify-content: center;
+    font-size: 15px;
+    text-align: center;
+    
+  }
+  .dataLogin {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+  }
 
+  .findByTown {
+    width: 90%;
+  }
+  .loginIconLoggedOut {
+    display: flex;
+    width: 20%;
+  }
+  .loginIconLoggedIn {
+    display: flex;
+    width: 20%;
+  }
+  .leftButtons {
+    display: flex;
+    justify-content: space-around;
+  }
+  .btnFindTown {
+    display: flex;
+    align-items: flex-start;
+    width: 65px;
+    height: 50px;
+    background-color: transparent;
+    color: aliceblue;
+    border-style: none;
+    font-weight: bold;
+  }
+  .rightButtons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .inputFindTown {
+    height: 20px;
+  }
 }

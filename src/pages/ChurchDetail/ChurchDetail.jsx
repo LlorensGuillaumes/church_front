@@ -3,7 +3,17 @@ import "./ChurchDetail.css";
 import Carrousel from "../../components/Carrousel/Carrousel";
 import api from "../../shared/API/Api";
 import estrellaBlanca from "../../components/Images/estrellaBlanca.png";
+import logoGoogleMaps from '../../components/Images/logoGoogleMaps.png';
+import logoWebLink from '../../components/Images/enlaceWebIcon.jpeg'
 import estrella from "../../components/Images/estrella.png";
+import { connect } from "react-redux";
+import { selectUser } from "../../redux/users/selector";
+
+const mapStateToProps = (state) =>{
+  return{
+    user: selectUser(state)
+  }
+}
 
 const ChurchDetail = ({
   selectedChurch,
@@ -152,7 +162,7 @@ const ChurchDetail = ({
       api.put(`/userData/edit/${dataUser._id}/`, dataUser).then(() => {});
     }
   };
-
+console.log(user)
   return (
     <div className="detailDiv">
       {user && (user.rol === "AD" || user.rol === "SA") ? (
@@ -168,7 +178,7 @@ const ChurchDetail = ({
         </div>
       ) : null}
       <div className="info">
-        {user ? (
+        {user.mail ? (
           <div className="addPuntuation">
             {imagesStates.map((isEstrellaVisible, index) => (
               <div
@@ -184,7 +194,7 @@ const ChurchDetail = ({
               </div>
             ))}
             {!voted && (
-              <button onClick={() => fnAddValoration()} className="btnNavbar">
+              <button onClick={() => fnAddValoration()} className="btnNavbar btnSaveValoration">
                 Guardar
               </button>
             )}
@@ -218,7 +228,7 @@ const ChurchDetail = ({
           <div className="name_faovourites">
             <h2 className="principalName">{churchName[0]}</h2>
             <div>
-              {user && (
+              {user.mail && (
                 <div
                   className="addFovourites"
                   onClick={() => fnAddFaovourites()}
@@ -262,13 +272,18 @@ const ChurchDetail = ({
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  googleMaps
+                  <div className="googleMapsContainer">
+                    <img src={logoGoogleMaps} alt="GoogleMaps" className="logoGoogleMaps" title="Obrir amb Google maps"/>
+
+                  </div>
                 </a>
               ) : null}
               {churchweb ? (
                 <a href={churchweb} target="_blank" rel="noreferrer">
-                  {" "}
-                  web: {churchName[0]}
+                <div className="googleMapsContainer">
+                    <img src={logoWebLink} alt="GoogleMaps" className="logoGoogleMaps" title="Anar a la web"/>
+
+                  </div>
                 </a>
               ) : null}
             </div>
@@ -296,4 +311,4 @@ const ChurchDetail = ({
   // return <div className="detailDiv"></div>;
 };
 
-export default ChurchDetail;
+export default connect(mapStateToProps)(ChurchDetail);

@@ -27,12 +27,14 @@
 }
 
 .description {
+  border-radius: 0rem;
   margin-top: 25px;
   height: 100px;
   overflow: hidden;
   text-align: justify;
 }
 .descriptionExtend {
+  border-radius: 0rem;
   margin-top: 25px;
   text-align: justify;
 }

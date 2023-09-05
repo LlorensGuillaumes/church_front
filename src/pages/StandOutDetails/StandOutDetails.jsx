@@ -8,6 +8,9 @@ const StandOutDetail = ({
   buildingDetails,
   setBuildingDetails,
   dataSelect,
+  isSmallScreen,
+  setPrincipalView,
+  setFilter,
 }) => {
   //const [myData, setMyData] = useState([]);
   const [newDetailTye, setNewDetailType] = useState("");
@@ -54,6 +57,19 @@ const StandOutDetail = ({
 
   return selectedChurch ? (
     <div className="detailDiv">
+      <h1 className="detailTitle">Detalls a destacar</h1>
+      {isSmallScreen && (
+        <button
+          className="btnNavbar btnTancar"
+          onClick={() => {
+            setPrincipalView("detail");
+          }}
+        >
+          {" "}
+          Tancar{" "}
+        </button>
+      )}
+
       {standOutDetailsData && standOutDetailsData.length > 0
         ? standOutDetailsData.map((item, index) => (
             <div key={index} className="itemsContent">

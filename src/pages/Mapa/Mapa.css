@@ -8,6 +8,22 @@
 .leaflet-top{
     background-color: transparent;
 }
+.leaflet-bar{
+   border: none !important;
+}
 span{
     background-color: transparent;
+}
+.leaflet{
+    background-color: transparent;
+}
+
+.leaflet-control-zoom-in{
+    border-radius: 0px !important;
+}
+.leaflet-control-zoom-out{
+    border-radius: 0px !important;
+}
+.leaflet-control-attribution{
+    background-color: transparent !important;
 }

@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import "./VisibleChurch.css";
 import estrella from "../Images/estrella.png";
 
+
 const VisibleChurch = ({
   visibleChurches,
   setVisibleChurches,
@@ -68,7 +69,9 @@ const VisibleChurch = ({
                 src={`https://buildingback.onrender.com/churches/getImages/${item[3]}`}
                 alt={`${index}`}
               />
-              {item[4] && Array.isArray(item[4]) && item[4].length > 0 && (
+             
+            </div>
+            {item[4] && Array.isArray(item[4]) && item[4].length > 0 && (
                 <div className="puntuation">
                   <h1 className="number">
                     {(
@@ -80,7 +83,6 @@ const VisibleChurch = ({
                   </h1>
                 </div>
               )}
-            </div>
             <div className="estrella">
               <img src={estrella} alt="estrella" className="picture"></img>
             </div>

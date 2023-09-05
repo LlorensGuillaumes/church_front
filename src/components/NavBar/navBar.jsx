@@ -9,8 +9,6 @@ import api from "../../shared/API/Api";
 import "./navBar.css";
 import lupa from "../../components/Images/lupa.png";
 
-
-
 const NavBar = ({
   setFilter,
   filter,
@@ -29,7 +27,7 @@ const NavBar = ({
   isSmallScreen,
   dataUser,
   loginUser,
-  logoutUser, 
+  logoutUser,
   actualLocation,
   SetActualLocation,
 }) => {
@@ -62,8 +60,6 @@ const NavBar = ({
   };
 
   const fnLogin = () => {
-
-
     if (!user.mail) {
       const loginData = {
         mail: inputUser,
@@ -74,7 +70,7 @@ const NavBar = ({
         .post("/users/login", loginData)
         .then(async (response) => {
           if (response.userDB) {
-            localStorage.setItem("token", response.token);           
+            localStorage.setItem("token", response.token);
             loginUser(response.userDB);
             setBtnLoginVisible(false);
 
@@ -98,10 +94,11 @@ const NavBar = ({
           setErrorAutenticate(true);
           console.log("Error en la llamada a la API:", error);
         });
-    } 
+    }
+
+    SetInputUser("");
+    SetInputPasword("");
   };
-
-
 
   const handleSelectedChange = (selectedValue) => {
     if (selectedValue === "newBuilding") {
@@ -113,7 +110,7 @@ const NavBar = ({
     }
   };
 
-  const [town, setTown] = useState([]);
+  const [town, setTown] = useState('');
   const [townsData, setTownsData] = useState([]);
   const arrTownData = [];
 
@@ -147,8 +144,15 @@ const NavBar = ({
       zoom: 12,
       data: dataToFiltered,
     }));
-    SetActualLocation(item.ubication)
+    SetActualLocation(item.ubication);
     setListTownVisible(false);
+    if(isSmallScreen){
+      setPrincipalView("listView");
+    } else{
+      setPrincipalView('mapView')
+      setFilter('listView')
+    }
+    
     arrTownData.length = 0;
   };
 
@@ -159,6 +163,7 @@ const NavBar = ({
 
   const fnRegister = () => {
     setRegister(false);
+    setLoginVisible(false);
     if (isSmallScreen) {
       principalView !== "register"
         ? setPrincipalView("register")
@@ -168,13 +173,15 @@ const NavBar = ({
     }
   };
 
-
   return (
     <div className="navBar">
       {btnLoginVisible && (
         <div className="rightButtons">
           <button
-            onClick={() => setLoginVisible(!loginVisible)}
+            onClick={() => {
+              setLoginVisible(!loginVisible);
+              setPrincipalView("listView");
+            }}
             className="btnNavbar btnLogin"
           >
             Inicia sessió
@@ -191,7 +198,7 @@ const NavBar = ({
           {user.mail ? (
             <div className="dataLogin">
               <p
-                className="btnNavbar"
+                className="loginName"
                 onClick={() => {
                   isSmallScreen
                     ? setPrincipalView("userSettings")
@@ -219,14 +226,16 @@ const NavBar = ({
             <div className="dataLogin">
               <input
                 type="text"
-                placeholder="admin@admin.com"
+                placeholder="mail"
                 className="logInput"
+                value={inputUser}
                 onChange={(e) => SetInputUser(e.target.value)}
               />
               <input
-                type="text"
-                placeholder="admin1234@"
+                type="password"
+                placeholder="password"
                 className="logInput"
+                value={inputPasword}
                 onChange={(e) => SetInputPasword(e.target.value)}
               />
 
@@ -291,6 +300,7 @@ const NavBar = ({
           <input
             className="inputFindTown"
             placeholder="On anem?"
+            value={town}
             onChange={(e) => {
               setTown(e.target.value);
             }}
@@ -301,7 +311,7 @@ const NavBar = ({
               fnMapCenter();
             }}
           >
-            <img src={lupa} alt="lupa" />
+            <img src={lupa} alt="lupa" onClick={()=>setTown("")}/>
           </button>
 
           <div>
@@ -392,4 +402,3 @@ const NavBar = ({
 };
 
 export default connectUser(NavBar);
-

@@ -64,7 +64,7 @@ function App() {
 
   useEffect(() => {
     fetchData();
-    if(navigator.geolocation){
+    if (navigator.geolocation) {
       const getPosition = () => {
         return new Promise((resolve, reject) => {
           if ("geolocation" in navigator) {
@@ -87,36 +87,30 @@ function App() {
       };
 
       getPosition()
-      .then((position) => {
-        console.log(position)
-        if (position){
-             SetActualLocation([
-          position.coords.latitude,
-          position.coords.longitude,
-        ]);
-        }else {
+        .then((position) => {
+          console.log(position);
+          if (position) {
+            SetActualLocation([
+              position.coords.latitude,
+              position.coords.longitude,
+            ]);
+          } else {
+            SetActualLocation([41.20721, 1.67429]);
+          }
+
+          return [position.coords.latitude, position.coords.longitude];
+        })
+        .then((newCenter) => {
+          setDataFiltered((prevDataFiltered) => ({
+            ...prevDataFiltered,
+            center: newCenter,
+          }));
+        })
+        .catch((error) => {
+          console.error("Error al obtener la posición:", error);
           SetActualLocation([41.20721, 1.67429]);
-        }
-     
-        return [position.coords.latitude, position.coords.longitude];
-      })
-      .then((newCenter) => {
-        setDataFiltered((prevDataFiltered) => ({
-          ...prevDataFiltered,
-          center: newCenter,
-        }));
-       
-      })
-      .catch((error) => {
-        console.error("Error al obtener la posición:", error);
-        SetActualLocation([41.20721, 1.67429]);
-
-      });
-
+        });
     }
- 
-
-
   }, []);
 
   if (viewIntitialPage) {
@@ -242,6 +236,9 @@ function App() {
                 buildingDetails={buildingDetails}
                 setBuildingDetails={setBuildingDetails}
                 dataSelect={dataSelect}
+                isSmallScreen={isSmallScreen}
+                setPrincipalView={setPrincipalView}
+                setFilter={setFilter}
               />
             )}
             {principalView === "register" && (
@@ -280,6 +277,9 @@ function App() {
               buildingDetails={buildingDetails}
               setBuildingDetails={setBuildingDetails}
               dataSelect={dataSelect}
+              isSmallScreen={isSmallScreen}
+              setPrincipalView={setPrincipalView}
+              setFilter={setFilter}
             />
           )}
           {filter === "register" && (

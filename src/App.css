@@ -6,13 +6,17 @@
   height: 40vmin;
   pointer-events: none;
 }
-
+body{
+  background-color: rgb(190, 158, 110);
+}
 * {
   margin: 0px;
   padding: 0px;
-  background-color: rgb(190, 158, 110);
+  background-color: transparent;
   box-shadow: none;
-  border-radius: 2rem;
+  border-radius: 1rem;
+  width: 100%;
+ 
  
 }
 .principalView{
@@ -26,6 +30,9 @@ button {
   font-weight: bolder;
   padding: 7px;
 }
+img{
+  background-color: transparent;
+}
 
 input::placeholder {
   color: white;
@@ -37,7 +44,7 @@ textarea::placeholder {
   color: white;
 }
 textarea {
-  color: black;
+  color: white;
 }
 input {
   color: white;
@@ -51,7 +58,7 @@ h2 {
   color: white;
 }
 p {
-  color: black;
+  color: white;
 }
 a {
   color: aqua;
